@@ -184,10 +184,6 @@ public class GameApplication extends Application {
 
     // This method creates the Scene where both Players attempt to hit each other's Ships
     private Scene createGameplayScene() {
-        if (!gameController.allShipsArePlaced()) {
-            return new Scene(new Label("Not all ships have been placed yet."));
-        }
-
         // Update logic
         gameController.setActivePlayer(gameController.getPlayers().get(0));
 
