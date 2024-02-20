@@ -254,6 +254,7 @@ public class GameApplication extends Application {
                     return;
                 }
 
+                // If it is actually this Player's turn right now...
                 if (gameController.getActivePlayer() == player) {
                     // Reset button colors
                     for (int j = 0; j < 100; j++) {
