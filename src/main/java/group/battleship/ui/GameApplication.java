@@ -25,11 +25,9 @@ public class GameApplication extends Application {
     private Scene newPlayerScene;
     private Scene shipPlacementScene;
     private Scene gameplayScene;
-    private final List<Button> placeShipTiles;
 
     public GameApplication() {
         gameController = new GameController();
-        placeShipTiles = new ArrayList<>();
     }
 
     public void go() {
