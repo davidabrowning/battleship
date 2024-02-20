@@ -281,10 +281,6 @@ public class GameApplication extends Application {
                     return;
                 }
 
-                if (otherFleet.containsHitLocation(tileNum)) {
-                    return;
-                }
-
                 if (otherPlayer.getShotsSustained().contains(tileNum)) {
                     return;
                 }
