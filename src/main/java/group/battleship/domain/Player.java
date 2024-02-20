@@ -22,13 +22,7 @@ public class Player {
     public List<Integer> getShotsSustained() { return shotsSustained; }
     public void sustainShot(int tileNum) { shotsSustained.add(tileNum); }
     public boolean placeShipHorizontally() { return placeShipHorizontally; }
-    public void rotateShipPlacement() {
-        if (placeShipHorizontally) {
-            placeShipHorizontally = false;
-        } else {
-            placeShipHorizontally = true;
-        }
-    }
+    public void rotateShipPlacement() { placeShipHorizontally = !placeShipHorizontally; }
     @Override
     public String toString() { return getName(); }
 }
