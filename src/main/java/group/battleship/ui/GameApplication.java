@@ -94,7 +94,6 @@ public class GameApplication extends Application {
     // This method creates the Scene where players place their Ships
     // at the beginning of the game
     private Scene createShipPlacementScene() {
-
         // If all Ships are placed, advance to gameplay Scene
         if (gameController.allShipsArePlaced()) {
             gameplayScene = createGameplayScene();
