@@ -5,10 +5,10 @@ import java.util.Set;
 
 public class Ship {
 
-    private String name;
+    private final String name;
     private final int size;
-    private Set<Integer> locations;
-    private Set<Integer> hits;
+    private final Set<Integer> locations;
+    private final Set<Integer> hits;
     private boolean isSunk;
 
     public Ship(String name, int size) {
@@ -30,7 +30,7 @@ public class Ship {
         }
     }
     public boolean isSunk() { return isSunk; }
-    public boolean hasBeenPlaced() { return locations.size() > 0; }
+    public boolean hasNotBeenPlaced() { return locations.isEmpty(); }
     @Override public String toString() { return name; }
 
 }
