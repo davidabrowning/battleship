@@ -48,6 +48,7 @@ public class GameApplication extends Application {
         stage.show();
     }
 
+    // This method creates the Scene where new players enter their names
     private Scene createNewPlayerScene() {
         // Configure player name Label
         Label newPlayerLabel = new Label("Player 1:");
@@ -61,8 +62,9 @@ public class GameApplication extends Application {
         Button submitButton = new Button("Submit");
         submitButton.setFont(Style.FONT_DEFAULT);
 
-        // Configure action events
+        // On submit action...
         submitButton.setOnAction(event -> {
+
             // Create player
             gameController.createPlayer(newPlayerTextField.getText());
 
@@ -89,25 +91,27 @@ public class GameApplication extends Application {
         return new Scene(newPlayerHBox);
     }
 
+    // This method creates the Scene where players place their Ships
+    // at the beginning of the game
     private Scene createShipPlacementScene() {
 
-        if (gameController.getNumPlayers() < 2) {
-            return new Scene(new Label("No players yet"));
-        }
-
+        // If all Ships are placed, advance to gameplay Scene
         if (gameController.allShipsArePlaced()) {
             gameplayScene = createGameplayScene();
             stage.setScene(gameplayScene);
             return gameplayScene;
         }
 
+        // If this active Player has placed all of their Ships, then swap to the other Player
         if (gameController.allShipsArePlaced(gameController.getActivePlayer())) {
             gameController.swapActivePlayer();
         }
 
+        // Get Player info
         Player player = gameController.getActivePlayer();
         Fleet fleet = player.getFleet();
         Ship ship = gameController.getFirstUnplacedShip(player);
+        List<Button> placeShipTiles = new ArrayList<>();
 
         // Create instruction label
         Label placeShipLabel = new Label("Admiral " + player + ", please place your " + ship + " (R to rotate):");
@@ -121,11 +125,14 @@ public class GameApplication extends Application {
             int row = tileNum / 10;
             int col = tileNum % 10;
 
-
+            // Configure this location Button
             Button shipButton = new Button();
             shipButton.setFont(Style.FONT_SMALL);
             shipButton.setMinWidth(50);
             shipButton.setMinHeight(50);
+            shipButton.setBorder(new Border(Style.BORDER_BLACK));
+
+            // Set already placed Ships to GRAY
             if (player.getFleet().containsLocation(tileNum)) {
                 shipButton.setBackground(Background.fill(Color.DARKGRAY));
             } else {
@@ -133,18 +140,21 @@ public class GameApplication extends Application {
             }
             shipButton.setBorder(new Border(Style.BORDER_BLACK));
 
-            GridPane.setRowIndex(shipButton, row);
-            GridPane.setColumnIndex(shipButton, col);
+            // Add this Button to the Ship placement grid
+            GridPane.setRowIndex(shipButton, tileNum / 10);
+            GridPane.setColumnIndex(shipButton, tileNum % 10);
             placeShipsGrid.getChildren().add(shipButton);
             placeShipTiles.add(shipButton);
 
+            // On hover...
             shipButton.setOnMouseEntered(event -> {
-                // Set buttons back to white
+                // Set other Buttons back to WHITE
                 for (int k = 0; k < 100; k++) {
                     if (!fleet.containsLocation(k)) {
                         placeShipTiles.get(k).setBackground(Background.fill(Color.LIGHTBLUE));
                     }
                 }
+                // Set this Button to GRAY
                 if (gameController.isValidShipPlacementLocation(tileNum, ship.getSize(), fleet)) {
                     for (int j = 0; j < ship.getSize(); j++) {
                         placeShipTiles.get(tileNum + j).setBackground(Background.fill(Color.GRAY));
@@ -152,7 +162,9 @@ public class GameApplication extends Application {
                 }
             });
 
+            // On click...
             shipButton.setOnAction(event -> {
+                // Place the Ship at this location and set the Scene to place the next Ship
                 if (gameController.isValidShipPlacementLocation(tileNum, ship.getSize(), fleet)) {
                     gameController.placeShip(ship, tileNum);
                     placeShipTiles.clear();
@@ -174,6 +186,7 @@ public class GameApplication extends Application {
         return new Scene(shipPlacementLayout);
     }
 
+    // This method creates the Scene where both Players attempt to hit each other's Ships
     private Scene createGameplayScene() {
         if (!gameController.allShipsArePlaced()) {
             return new Scene(new Label("Not all ships have been placed yet."));
@@ -182,22 +195,26 @@ public class GameApplication extends Application {
         // Update logic
         gameController.setActivePlayer(gameController.getPlayers().get(0));
 
-        // Create components
-        Label playerOneAttackLabel = new Label("Admiral " + gameController.getPlayers().get(0) + "'s attempts:");
+        // Create components: Instruction Labels
+        Label playerOneAttackLabel = new Label(gameController.getPlayers().get(0) + "'s attempts:");
+        Label playerTwoAttackLabel = new Label(gameController.getPlayers().get(1) + "'s attempts:");
         playerOneAttackLabel.setFont(Style.FONT_DEFAULT);
 
         Label playerTwoAttackLabel = new Label("Admiral " + gameController.getPlayers().get(1) + "'s attempts:");
         playerTwoAttackLabel.setFont(Style.FONT_DEFAULT);
 
+        // Create components: Sea grids where other player's Ships are hiding
         GridPane playerOneGameplayGrid = createGameplayGrid(gameController.getPlayers().get(0));
         GridPane playerTwoGameplayGrid = createGameplayGrid(gameController.getPlayers().get(1));
 
+        // Create components: Container for Player 1's Label and grid
         VBox playerOneAttackVBox = new VBox();
         playerOneAttackVBox.setAlignment(Pos.CENTER);
         playerOneAttackVBox.setPadding(Style.INSETS_LARGE);
         playerOneAttackVBox.setSpacing(Style.SPACING_LARGE);
         playerOneAttackVBox.getChildren().addAll(playerOneAttackLabel, playerOneGameplayGrid);
 
+        // Create components: Container for Player 2's Label and grid
         VBox playerTwoAttackVBox = new VBox();
         playerTwoAttackVBox.setAlignment(Pos.CENTER);
         playerTwoAttackVBox.setPadding(Style.INSETS_LARGE);
@@ -213,6 +230,7 @@ public class GameApplication extends Application {
         return new Scene(gameplayLayout);
     }
 
+    // This method creates the grid where the other Player's ships are hiding
     private GridPane createGameplayGrid(Player player) {
 
         Player otherPlayer = gameController.getOtherPlayer(player);
@@ -227,6 +245,7 @@ public class GameApplication extends Application {
             int row = tileNum / 10;
             int col = tileNum % 10;
 
+            // Create and configure this button
             Button seaButton = new Button();
             seaButton.setFont(Style.FONT_SMALL);
             seaButton.setMinWidth(50);
@@ -238,12 +257,15 @@ public class GameApplication extends Application {
             }
             seaButton.setBorder(new Border(Style.BORDER_BLACK));
 
-            GridPane.setRowIndex(seaButton, row);
-            GridPane.setColumnIndex(seaButton, col);
+            // Add this Button to the grid and the List of Buttons
+            GridPane.setRowIndex(seaButton, tileNum / 10);
+            GridPane.setColumnIndex(seaButton, tileNum % 10);
             gameplayGrid.getChildren().add(seaButton);
             seaButtons.add(seaButton);
 
+            // On hover...
             seaButton.setOnMouseEntered(event -> {
+                // If game is over, don't do anything
                 if (gameController.isGameOver()) {
                     return;
                 }
