@@ -122,8 +122,6 @@ public class GameApplication extends Application {
         placeShipsGrid.setAlignment(Pos.CENTER);
         for (int i = 0; i < 100; i++) {
             int tileNum = i;
-            int row = tileNum / 10;
-            int col = tileNum % 10;
 
             // Configure this location Button
             Button shipButton = new Button();
@@ -242,8 +240,6 @@ public class GameApplication extends Application {
         gameplayGrid.setAlignment(Pos.CENTER);
         for (int i = 0; i < 100; i++) {
             int tileNum = i;
-            int row = tileNum / 10;
-            int col = tileNum % 10;
 
             // Create and configure this button
             Button seaButton = new Button();
