@@ -125,7 +125,6 @@ public class GameApplication extends Application {
 
             // Configure this location Button
             Button shipButton = new Button();
-            shipButton.setFont(Style.FONT_SMALL);
             shipButton.setMinWidth(50);
             shipButton.setMinHeight(50);
             shipButton.setBorder(new Border(Style.BORDER_BLACK));
