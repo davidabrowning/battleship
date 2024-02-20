@@ -20,5 +20,5 @@ public class Player {
     public List<Integer> getShotsSustained() { return shotsSustained; }
     public void sustainShot(int tileNum) { shotsSustained.add(tileNum); }
     @Override
-    public String toString() { return name; }
+    public String toString() { return getName(); }
 }
