@@ -20,7 +20,7 @@ class GameControllerTest {
     void createPlayerCreatesAPlayer() {
         GameController newGC = new GameController();
         newGC.createPlayer("John Doe");
-        assertTrue(newGC.getActivePlayer().toString().equals("John Doe"));
+        assertEquals(newGC.getActivePlayer().toString(), "John Doe");
     }
 
     @Test
