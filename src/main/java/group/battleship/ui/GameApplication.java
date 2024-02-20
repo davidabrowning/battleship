@@ -296,12 +296,15 @@ public class GameApplication extends Application {
                     seaButton.setBackground(Background.fill(Color.WHITE));
                 }
 
-                // Change any sunk ships to dark red
+                // Update Ship colors
                 for (int k = 0; k < 100; k++) {
-                    if (otherFleet.containsSunkShip(k)) {
-                        if (gameController.isGameOver()) {
+                    if (gameController.isGameOver()) {
+                        if (otherFleet.containsSunkShip(k)) {
                             seaButtons.get(k).setBackground(Background.fill(Color.GREEN));
-                        } else {
+                        }
+
+                    } else {
+                        if (otherFleet.containsSunkShip(k)) {
                             seaButtons.get(k).setBackground(Background.fill(Color.DARKRED));
                         }
                     }
