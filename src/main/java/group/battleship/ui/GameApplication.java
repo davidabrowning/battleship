@@ -238,11 +238,7 @@ public class GameApplication extends Application {
             seaButton.setFont(Style.FONT_SMALL);
             seaButton.setMinWidth(50);
             seaButton.setMinHeight(50);
-            if (otherFleet.containsLocation(tileNum)) {
-                seaButton.setBackground(Background.fill(Color.LIGHTBLUE));
-            } else {
-                seaButton.setBackground(Background.fill(Color.LIGHTBLUE));
-            }
+            seaButton.setBackground(Background.fill(Color.LIGHTBLUE));
             seaButton.setBorder(new Border(Style.BORDER_BLACK));
 
             // Add this Button to the grid and the List of Buttons
