@@ -54,13 +54,13 @@ public class Fleet {
         return false;
     }
 
-    public boolean hasBeenPlaced() {
+    public boolean hasNotBeenPlaced() {
         for (Ship ship : ships) {
-            if (!ship.hasBeenPlaced()) {
-                return false;
+            if (ship.hasNotBeenPlaced()) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
 }
