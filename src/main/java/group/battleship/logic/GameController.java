@@ -2,7 +2,6 @@ package group.battleship.logic;
 
 import group.battleship.domain.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GameController {
