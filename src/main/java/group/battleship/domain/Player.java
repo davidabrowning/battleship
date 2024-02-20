@@ -5,9 +5,9 @@ import java.util.List;
 
 public class Player {
 
-    private String name;
-    private Fleet fleet;
-    private List<Integer> shotsSustained;
+    private final String name;
+    private final Fleet fleet;
+    private final List<Integer> shotsSustained;
 
     public Player(String name) {
         this.name = name;
