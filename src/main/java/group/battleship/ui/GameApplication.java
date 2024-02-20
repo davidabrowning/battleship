@@ -38,8 +38,8 @@ public class GameApplication extends Application {
     public void start(Stage stage) {
         // Create the Scenes
         newPlayerScene = createNewPlayerScene();
-        shipPlacementScene = createShipPlacementScene();
-        gameplayScene = createGameplayScene();
+        shipPlacementScene = null;
+        gameplayScene = null;
 
         // Configure the Stage
         this.stage = stage;
