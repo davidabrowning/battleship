@@ -135,7 +135,6 @@ public class GameApplication extends Application {
             } else {
                 shipButton.setBackground(Background.fill(Color.LIGHTBLUE));
             }
-            shipButton.setBorder(new Border(Style.BORDER_BLACK));
 
             // Add this Button to the Ship placement grid
             GridPane.setRowIndex(shipButton, tileNum / 10);
