@@ -33,7 +33,7 @@ public class GameController {
 
     public Ship getFirstUnplacedShip(Player p) {
         for (Ship ship : p.getFleet().getShips()) {
-            if (!ship.hasBeenPlaced()) {
+            if (ship.hasNotBeenPlaced()) {
                 return ship;
             }
         }
