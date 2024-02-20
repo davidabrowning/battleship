@@ -257,19 +257,15 @@ public class GameApplication extends Application {
                 if (gameController.getActivePlayer() == player) {
                     // Reset button colors
                     for (int j = 0; j < 100; j++) {
-                        if (otherFleet.containsHitLocation(j)) {
-                            continue;
-                        } else if (otherPlayer.getShotsSustained().contains(j)) {
-                            continue;
-                        } else if (otherFleet.containsLocation(j)) {
-                            seaButtons.get(j).setBackground(Background.fill(Color.LIGHTBLUE));
-                        } else {
+
+                        // Reset unattempted tiles to LIGHTBLUE
+                        if (!otherPlayer.getShotsSustained().contains(j)) {
                             seaButtons.get(j).setBackground(Background.fill(Color.LIGHTBLUE));
                         }
                     }
 
-                    // Update the hovered button's color
-                    if (!otherFleet.containsHitLocation(tileNum) && !otherPlayer.getShotsSustained().contains(tileNum)) {
+                    // Update the hovered Button's color to ORANGE
+                    if (!otherPlayer.getShotsSustained().contains(tileNum)) {
                         seaButton.setBackground(Background.fill(Color.ORANGE));
                     }
                 }
