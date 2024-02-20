@@ -114,7 +114,7 @@ public class GameApplication extends Application {
         List<Button> placeShipTiles = new ArrayList<>();
 
         // Create instruction label
-        Label placeShipLabel = new Label("Admiral " + player + ", please place your " + ship + " (R to rotate):");
+        Label placeShipLabel = new Label(player + ", please place your " + ship + " (R to rotate):");
         placeShipLabel.setFont(Style.FONT_DEFAULT);
 
         // Create input grid
@@ -197,8 +197,6 @@ public class GameApplication extends Application {
         Label playerOneAttackLabel = new Label(gameController.getPlayers().get(0) + "'s attempts:");
         Label playerTwoAttackLabel = new Label(gameController.getPlayers().get(1) + "'s attempts:");
         playerOneAttackLabel.setFont(Style.FONT_DEFAULT);
-
-        Label playerTwoAttackLabel = new Label("Admiral " + gameController.getPlayers().get(1) + "'s attempts:");
         playerTwoAttackLabel.setFont(Style.FONT_DEFAULT);
 
         // Create components: Sea grids where other player's Ships are hiding
