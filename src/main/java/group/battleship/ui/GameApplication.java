@@ -165,8 +165,8 @@ public class GameApplication extends Application {
                 // Place the Ship at this location and set the Scene to place the next Ship
                 if (gameController.isValidShipPlacementLocation(tileNum, ship.getSize(), fleet)) {
                     gameController.placeShip(ship, tileNum);
-                    placeShipTiles.clear();
-                    stage.setScene(createShipPlacementScene());
+                    shipPlacementScene = createShipPlacementScene();
+                    stage.setScene(shipPlacementScene);
                 }
             });
 
