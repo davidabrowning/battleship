@@ -1,9 +1,6 @@
 package group.battleship.logic;
 
-import group.battleship.domain.Game;
-import group.battleship.domain.Player;
-import group.battleship.domain.Ship;
-import group.battleship.domain.Fleet;
+import group.battleship.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
