@@ -8,15 +8,15 @@ import group.battleship.domain.*;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
+import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import javafx.scene.control.Label;
-import javafx.scene.control.Button;
+
+
 
 public class GameApplication extends Application {
 
