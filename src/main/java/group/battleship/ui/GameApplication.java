@@ -151,8 +151,14 @@ public class GameApplication extends Application {
                 }
                 // Set this Button to GRAY
                 if (gameController.isValidShipPlacementLocation(tileNum, ship.getSize(), fleet)) {
-                    for (int j = 0; j < ship.getSize(); j++) {
-                        placeShipTiles.get(tileNum + j).setBackground(Background.fill(Color.GRAY));
+                    if (gameController.placeShipHorizontally(player)) {
+                        for (int j = 0; j < ship.getSize(); j++) {
+                            placeShipTiles.get(tileNum + j).setBackground(Background.fill(Color.GRAY));
+                        }
+                    } else {
+                        for (int j = 0; j < ship.getSize(); j++) {
+                            placeShipTiles.get(tileNum + j * 10).setBackground(Background.fill(Color.GRAY));
+                        }
                     }
                 }
             });
@@ -178,7 +184,15 @@ public class GameApplication extends Application {
         shipPlacementLayout.setPadding(Style.INSETS_DEFAULT);
         shipPlacementLayout.getChildren().addAll(placeShipLabel, placeShipsGrid);
 
-        return new Scene(shipPlacementLayout);
+        Scene scene = new Scene(shipPlacementLayout);
+
+        scene.setOnKeyPressed(event -> {
+            if (event.getCode().toString().equals("R")) {
+                gameController.rotateShipPlacement(player);
+            }
+        });
+
+        return scene;
     }
 
     // This method creates the Scene where both Players attempt to hit each other's Ships
