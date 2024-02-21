@@ -12,25 +12,30 @@ public class GameController {
         game = new Game();
     }
 
+    public int getNumPlayers() {
+        return game.numPlayers();
+    }
+    public Player getActivePlayer() {
+        return game.getActivePlayer();
+    }
+    public void setActivePlayer(Player p) { game.setActivePlayer(p); }
+    public List<Player> getPlayers() {
+        return game.getPlayers();
+    }
+    public Player getOtherPlayer(Player player) { return game.getOtherPlayer(player);}
+    public boolean isGameOver() { return game.isGameOver(); }
+    public boolean placeShipHorizontally(Player p) { return p.placeShipHorizontally(); }
+    public void rotateShipPlacement(Player p) { p.rotateShipPlacement(); }
+    public void swapActivePlayer() { game.swapActivePlayer(); }
+    public boolean allShipsArePlaced(Player p) { return !p.getFleet().hasNotBeenPlaced(); }
+
+    // This method creates a new Player and adds it to the Game
     public void createPlayer(String playerName) {
         Player p = new Player (playerName);
         game.addPlayer(p);
     }
 
-    public int getNumPlayers() {
-        return game.numPlayers();
-    }
-
-
-    public Player getActivePlayer() {
-        return game.getActivePlayer();
-    }
-    public void setActivePlayer(Player p) { game.setActivePlayer(p); }
-
-    public List<Player> getPlayers() {
-        return game.getPlayers();
-    }
-
+    // This method returns the next Ship a given Player needs to place
     public Ship getFirstUnplacedShip(Player p) {
         for (Ship ship : p.getFleet().getShips()) {
             if (ship.hasNotBeenPlaced()) {
@@ -40,18 +45,18 @@ public class GameController {
         return null;
     }
 
+    // This method checks if a Ship can be placed here legally
     public boolean isValidShipPlacementLocation(int tileNum, int shipLength, Fleet alreadyPlacedFleet) {
         int row = tileNum / 10;
         int col = tileNum % 10;
         boolean horizontalOrientation = game.getActivePlayer().placeShipHorizontally();
 
-        if (horizontalOrientation && col + shipLength > 10) {
-            return false;
-        }
-        if (!horizontalOrientation && row + shipLength > 10) {
+        // Check if this placement is on the grid
+        if (horizontalOrientation && col + shipLength > 10 || !horizontalOrientation && row + shipLength > 10) {
             return false;
         }
 
+        // Check if this placement overlaps with an already placed Ship
         int[] desiredTiles = new int[shipLength];
         if (horizontalOrientation) {
             for (int i = 0; i < shipLength; i++) {
@@ -71,7 +76,9 @@ public class GameController {
         return true;
     }
 
+    // Places a Ship at a given location
     public void placeShip(Ship ship, int tileNum) {
+        System.out.println("Placing " + ship + " at location " + tileNum + " for " + game.getActivePlayer());
         if (game.getActivePlayer().placeShipHorizontally()) {
             for (int i = 0; i < ship.getSize(); i++) {
                 ship.addLocation(tileNum + i);
@@ -81,14 +88,6 @@ public class GameController {
                 ship.addLocation(tileNum + i * 10);
             }
         }
-    }
-
-    public void swapActivePlayer() {
-        game.swapActivePlayer();
-    }
-
-    public boolean allShipsArePlaced(Player p) {
-        return !p.getFleet().hasNotBeenPlaced();
     }
 
     public boolean allShipsArePlaced() {
@@ -116,17 +115,5 @@ public class GameController {
             swapActivePlayer();
         }
     }
-
-    public Player getOtherPlayer(Player player) {
-        return game.getOtherPlayer(player);
-    }
-
-    public boolean isGameOver() {
-        return game.isGameOver();
-    }
-
-    public boolean placeShipHorizontally(Player p) { return p.placeShipHorizontally(); }
-
-    public void rotateShipPlacement(Player p) { p.rotateShipPlacement(); }
 
 }
