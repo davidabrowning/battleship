@@ -7,6 +7,7 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Screen;
 
 public class Style {
 
@@ -16,8 +17,8 @@ public class Style {
     public static final Insets INSETS_LARGE = new Insets(50, 50, 50, 50);
     public static final Font FONT_DEFAULT = new Font("Arial", 24);
     public static final Font FONT_SMALL = new Font("Arial", 12);
-    public static final int MIN_LAYOUT_WIDTH = 600;
-    public static final int MIN_LAYOUT_HEIGHT = 600;
+    public static final int MIN_LAYOUT_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
+    public static final int MIN_LAYOUT_HEIGHT = (int) Screen.getPrimary().getVisualBounds().getHeight();
     public static final BorderStroke BORDER_LIGHT_GRAY = new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT);
     public static final BorderStroke BORDER_BLACK = new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT);
     public static final BorderStroke BORDER_DARK_BLUE = new BorderStroke(Color.ROYALBLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT);
