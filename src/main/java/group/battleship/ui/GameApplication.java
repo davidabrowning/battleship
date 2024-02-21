@@ -34,8 +34,10 @@ public class GameApplication extends Application {
         Application.launch(GameApplication.class);
     }
 
+    // This method runs when the Application starts
     @Override
     public void start(Stage stage) {
+
         // Create the Scenes
         newPlayerScene = createNewPlayerScene();
         shipPlacementScene = null;
@@ -50,19 +52,31 @@ public class GameApplication extends Application {
 
     // This method creates the Scene where new players enter their names
     private Scene createNewPlayerScene() {
-        // Configure player name Label
+
+        // Configure components
         Label newPlayerLabel = new Label("Player 1:");
         newPlayerLabel.setFont(Style.FONT_DEFAULT);
-
-        // Configure player name input
         TextField newPlayerTextField = new TextField();
         newPlayerTextField.setFont(Style.FONT_DEFAULT);
+        Button submitButton = createNewPlayerSubmitButton(newPlayerLabel, newPlayerTextField);
 
-        // Configure submit
+        // Configure container
+        HBox newPlayerHBox = new HBox();
+        newPlayerHBox.setMinHeight(Style.MIN_LAYOUT_HEIGHT);
+        newPlayerHBox.setMinWidth(Style.MIN_LAYOUT_WIDTH);
+        newPlayerHBox.setAlignment(Pos.CENTER);
+        newPlayerHBox.setPadding(Style.INSETS_DEFAULT);
+        newPlayerHBox.setSpacing(Style.SPACING_DEFAULT);
+        newPlayerHBox.getChildren().addAll(newPlayerLabel, newPlayerTextField, submitButton);
+
+        return new Scene(newPlayerHBox);
+    }
+
+    // This method creates the new Player submit Button
+    private Button createNewPlayerSubmitButton(Label newPlayerLabel, TextField newPlayerTextField) {
+
         Button submitButton = new Button("Submit");
         submitButton.setFont(Style.FONT_DEFAULT);
-
-        // On submit action...
         submitButton.setOnAction(event -> {
 
             // Create player
@@ -79,29 +93,14 @@ public class GameApplication extends Application {
             }
         });
 
-        // Configure container
-        HBox newPlayerHBox = new HBox();
-        newPlayerHBox.setMinHeight(Style.MIN_LAYOUT_HEIGHT);
-        newPlayerHBox.setMinWidth(Style.MIN_LAYOUT_WIDTH);
-        newPlayerHBox.setAlignment(Pos.CENTER);
-        newPlayerHBox.setPadding(Style.INSETS_DEFAULT);
-        newPlayerHBox.setSpacing(Style.SPACING_DEFAULT);
-        newPlayerHBox.getChildren().addAll(newPlayerLabel, newPlayerTextField, submitButton);
-
-        return new Scene(newPlayerHBox);
+        return submitButton;
     }
 
     // This method creates the Scene where players place their Ships
     // at the beginning of the game
     private Scene createShipPlacementScene() {
-        // If all Ships are placed, advance to gameplay Scene
-        if (gameController.allShipsArePlaced()) {
-            gameplayScene = createGameplayScene();
-            stage.setScene(gameplayScene);
-            return gameplayScene;
-        }
 
-        // If this active Player has placed all of their Ships, then swap to the other Player
+        // Swap active Player if necessary
         if (gameController.allShipsArePlaced(gameController.getActivePlayer())) {
             gameController.swapActivePlayer();
         }
@@ -110,7 +109,7 @@ public class GameApplication extends Application {
         Player player = gameController.getActivePlayer();
         Fleet fleet = player.getFleet();
         Ship ship = gameController.getFirstUnplacedShip(player);
-        List<Button> placeShipTiles = new ArrayList<>();
+        List<Button> seaTiles = new ArrayList<>();
 
         // Create instruction label
         Label placeShipLabel = new Label(player + ", please place your " + ship + " (R to rotate):");
@@ -126,40 +125,20 @@ public class GameApplication extends Application {
             Button shipButton = new Button();
             shipButton.setMinWidth(50);
             shipButton.setMinHeight(50);
+            shipButton.setBackground(Background.fill(Color.LIGHTBLUE));
             shipButton.setBorder(new Border(Style.BORDER_BLACK));
-
-            // Set already placed Ships to GRAY
-            if (player.getFleet().containsLocation(tileNum)) {
-                shipButton.setBackground(Background.fill(Color.DARKGRAY));
-            } else {
-                shipButton.setBackground(Background.fill(Color.LIGHTBLUE));
-            }
 
             // Add this Button to the Ship placement grid
             GridPane.setRowIndex(shipButton, tileNum / 10);
             GridPane.setColumnIndex(shipButton, tileNum % 10);
             placeShipsGrid.getChildren().add(shipButton);
-            placeShipTiles.add(shipButton);
+            seaTiles.add(shipButton);
 
-            // On hover...
+            // On hover, reset open tiles and show updated Ship placement shadow
             shipButton.setOnMouseEntered(event -> {
-                // Set other Buttons back to WHITE
-                for (int k = 0; k < 100; k++) {
-                    if (!fleet.containsLocation(k)) {
-                        placeShipTiles.get(k).setBackground(Background.fill(Color.LIGHTBLUE));
-                    }
-                }
-                // Set this Button to GRAY
+                resetOpenSeaTilesDuringShipPlacement(fleet, seaTiles);
                 if (gameController.isValidShipPlacementLocation(tileNum, ship.getSize(), fleet)) {
-                    if (gameController.placeShipHorizontally(player)) {
-                        for (int j = 0; j < ship.getSize(); j++) {
-                            placeShipTiles.get(tileNum + j).setBackground(Background.fill(Color.GRAY));
-                        }
-                    } else {
-                        for (int j = 0; j < ship.getSize(); j++) {
-                            placeShipTiles.get(tileNum + j * 10).setBackground(Background.fill(Color.GRAY));
-                        }
-                    }
+                    showPotentialShipPlacementShadow(player, ship, tileNum, seaTiles);
                 }
             });
 
@@ -168,12 +147,19 @@ public class GameApplication extends Application {
                 // Place the Ship at this location and set the Scene to place the next Ship
                 if (gameController.isValidShipPlacementLocation(tileNum, ship.getSize(), fleet)) {
                     gameController.placeShip(ship, tileNum);
-                    shipPlacementScene = createShipPlacementScene();
-                    stage.setScene(shipPlacementScene);
+                    if (gameController.allShipsArePlaced()) {
+                        stage.setScene(createGameplayScene());
+                    } else {
+                        // Redraw shipPlacement Scene with updated Ship values
+                        stage.setScene(createShipPlacementScene());
+                    }
                 }
             });
 
         }
+
+        // Update already placed tiles to GRAY
+        updatePlacedShipTilesToGray(player, seaTiles);
 
         // Put Label and input grid on layout
         VBox shipPlacementLayout = new VBox();
@@ -193,6 +179,36 @@ public class GameApplication extends Application {
         });
 
         return scene;
+    }
+
+    public void resetOpenSeaTilesDuringShipPlacement(Fleet f, List<Button> seaTiles) {
+        for (int k = 0; k < 100; k++) {
+            if (!f.containsLocation(k)) {
+                seaTiles.get(k).setBackground(Background.fill(Color.LIGHTBLUE));
+            }
+        }
+    }
+
+    public void showPotentialShipPlacementShadow(Player p, Ship s, int tileNum, List<Button> seaTiles) {
+        if (gameController.placeShipHorizontally(p)) {
+            for (int j = 0; j < s.getSize(); j++) {
+                seaTiles.get(tileNum + j).setBackground(Background.fill(Color.GRAY));
+            }
+        } else {
+            for (int j = 0; j < s.getSize(); j++) {
+                seaTiles.get(tileNum + j * 10).setBackground(Background.fill(Color.GRAY));
+            }
+        }
+    }
+
+    public void updatePlacedShipTilesToGray(Player p, List<Button> seaTiles) {
+        for (int i = 0; i < 100; i++) {
+            if (p.getFleet().containsLocation(i)) {
+                seaTiles.get(i).setBackground(Background.fill(Color.DARKGRAY));
+            } else {
+                seaTiles.get(i).setBackground(Background.fill(Color.LIGHTBLUE));
+            }
+        }
     }
 
     // This method creates the Scene where both Players attempt to hit each other's Ships
@@ -226,8 +242,11 @@ public class GameApplication extends Application {
 
         // Add components to layout
         HBox gameplayLayout = new HBox();
+        gameplayLayout.setMinWidth(Style.MIN_LAYOUT_WIDTH);
+        gameplayLayout.setMinHeight(Style.MIN_LAYOUT_HEIGHT);
         gameplayLayout.setSpacing(Style.SPACING_DEFAULT);
         gameplayLayout.setPadding(Style.INSETS_DEFAULT);
+        gameplayLayout.setAlignment(Pos.CENTER);
         gameplayLayout.getChildren().addAll(playerOneAttackVBox, playerTwoAttackVBox);
 
         return new Scene(gameplayLayout);
