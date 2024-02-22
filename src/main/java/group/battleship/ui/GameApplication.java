@@ -22,6 +22,7 @@ import javafx.scene.paint.Color;
 public class GameApplication extends Application {
 
     private final GameController gameController;
+
     private Stage stage;
 
     private Scene newPlayerScene;
@@ -41,11 +42,10 @@ public class GameApplication extends Application {
 
     private Scene gameplayScene;
     private HBox gameplayLayout;
-    private Label playerOneAttackLabel;
-    private Label playerTwoAttackLabel;
-    //private GridPane playerOneGameplayGrid;
-    //private GridPane playerTwoGameplayGrid;
-    GridPane[] gameplayGrids;
+    //private Label playerOneAttackLabel;
+    //private Label playerTwoAttackLabel;
+    private Label[] gameplayAttackLabels;
+    private GridPane[] gameplayGrids;
     private VBox playerOneAttackVBox;
     private VBox playerTwoAttackVBox;
 
@@ -57,7 +57,7 @@ public class GameApplication extends Application {
         Application.launch(GameApplication.class);
     }
 
-    // This method runs when the Application starts
+    // This method runs when the Application launches
     @Override
     public void start(Stage stage) {
         this.stage = stage;
@@ -65,18 +65,10 @@ public class GameApplication extends Application {
     }
 
     public void buildGUI() {
-        buildFirstScene();
-        buildStage();
-    }
-
-    public void buildStage() {
+        buildNewPlayerScene();
         stage.setTitle("Desktop Battleship");
         stage.setScene(newPlayerScene);
         stage.show();
-    }
-
-    public void buildFirstScene() {
-        buildNewPlayerScene();
     }
 
     private void buildNewPlayerScene() {
@@ -92,10 +84,10 @@ public class GameApplication extends Application {
         newPlayerTextField.setFont(Style.FONT_DEFAULT);
         newPlayerSubmitButton = new Button("Submit");
         newPlayerSubmitButton.setFont(Style.FONT_DEFAULT);
-        newPlayerSubmitButton.setOnAction(event -> submitNewPlayerInput());
+        newPlayerSubmitButton.setOnAction(event -> handleCreateNewPlayerSubmitClick());
     }
 
-    public void submitNewPlayerInput() {
+    public void handleCreateNewPlayerSubmitClick() {
         gameController.createPlayer(newPlayerTextField.getText());
 
         if (gameController.getNumPlayers() < 2) {
@@ -124,7 +116,7 @@ public class GameApplication extends Application {
         shipPlacementSeaTiles = new ArrayList<Button>();
 
         swapActiveShipPlacementPlayerIfNecessary();
-        updatePlayerAndFleetAndShipToPlaceValues();
+        updatePlayerAndFleetAndShipPlacementValues();
         buildShipPlacementInstructionLabel();
         buildShipPlacementGridPane();
         updatePlacedShipTilesToGray();
@@ -140,7 +132,7 @@ public class GameApplication extends Application {
         }
     }
 
-    private void updatePlayerAndFleetAndShipToPlaceValues() {
+    private void updatePlayerAndFleetAndShipPlacementValues() {
         playerToPlace = gameController.getActivePlayer();
         fleetToPlace = playerToPlace.getFleet();
         shipToPlace = gameController.getFirstUnplacedShip(playerToPlace);
@@ -261,10 +253,11 @@ public class GameApplication extends Application {
 
     private void buildGameplayInputs() {
         // Create components: Instruction Labels
-        playerOneAttackLabel = new Label(gameController.getPlayers().get(0) + "'s attempts:");
-        playerTwoAttackLabel = new Label(gameController.getPlayers().get(1) + "'s attempts:");
-        playerOneAttackLabel.setFont(Style.FONT_DEFAULT);
-        playerTwoAttackLabel.setFont(Style.FONT_DEFAULT);
+        gameplayAttackLabels = new Label[2];
+        gameplayAttackLabels[0] = new Label(gameController.getPlayers().get(0) + "'s attempts:");
+        gameplayAttackLabels[1] = new Label(gameController.getPlayers().get(1) + "'s attempts:");
+        gameplayAttackLabels[0].setFont(Style.FONT_DEFAULT);
+        gameplayAttackLabels[1].setFont(Style.FONT_DEFAULT);
 
         // Create components: Sea grids where other player's Ships are hiding
         gameplayGrids = new GridPane[2];
@@ -283,14 +276,14 @@ public class GameApplication extends Application {
         playerOneAttackVBox.setAlignment(Pos.CENTER);
         playerOneAttackVBox.setPadding(Style.INSETS_LARGE);
         playerOneAttackVBox.setSpacing(Style.SPACING_LARGE);
-        playerOneAttackVBox.getChildren().addAll(playerOneAttackLabel, gameplayGrids[0]);
+        playerOneAttackVBox.getChildren().addAll(gameplayAttackLabels[0], gameplayGrids[0]);
 
         // Create components: Container for Player 2's Label and grid
         playerTwoAttackVBox = new VBox();
         playerTwoAttackVBox.setAlignment(Pos.CENTER);
         playerTwoAttackVBox.setPadding(Style.INSETS_LARGE);
         playerTwoAttackVBox.setSpacing(Style.SPACING_LARGE);
-        playerTwoAttackVBox.getChildren().addAll(playerTwoAttackLabel, gameplayGrids[1]);
+        playerTwoAttackVBox.getChildren().addAll(gameplayAttackLabels[1], gameplayGrids[1]);
     }
 
     private void buildGameplayLayout() {
