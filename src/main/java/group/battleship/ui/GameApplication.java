@@ -8,8 +8,10 @@ import group.battleship.domain.*;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -22,7 +24,12 @@ public class GameApplication extends Application {
 
     private final GameController gameController;
     private Stage stage;
+
     private Scene newPlayerScene;
+    private Label newPlayerLabel;
+    private TextField newPlayerTextField;
+    private Button newPlayerSubmitButton;
+
     private Scene shipPlacementScene;
     private Scene gameplayScene;
 
@@ -46,63 +53,56 @@ public class GameApplication extends Application {
         buildStage();
     }
 
-    public void buildScenes() {
-        buildNewPlayerScene();
-        buildShipPlacementScene();
-        buildGameplayScene();
-    }
-
     public void buildStage() {
         stage.setTitle("Desktop Battleship");
         stage.setScene(newPlayerScene);
         stage.show();
     }
 
+    public void buildScenes() {
+        buildNewPlayerScene();
+        buildShipPlacementScene();
+        buildGameplayScene();
+    }
 
-    // This method creates the Scene where new players enter their names
     private void buildNewPlayerScene() {
+        buildNewPlayerSubmissionInput();
+        Parent newPlayerLayout = buildAndGetNewPlayerLayout();
+        newPlayerScene = new Scene(newPlayerLayout);
+    }
 
-        // Configure components
-        Label newPlayerLabel = new Label("Player 1:");
+    public void buildNewPlayerSubmissionInput() {
+        newPlayerLabel = new Label("Player 1:");
         newPlayerLabel.setFont(Style.FONT_DEFAULT);
-        TextField newPlayerTextField = new TextField();
+        newPlayerTextField = new TextField();
         newPlayerTextField.setFont(Style.FONT_DEFAULT);
-        Button submitButton = createNewPlayerSubmitButton(newPlayerLabel, newPlayerTextField);
+        newPlayerSubmitButton = new Button("Submit");
+        newPlayerSubmitButton.setFont(Style.FONT_DEFAULT);
+        newPlayerSubmitButton.setOnAction(event -> submitNewPlayerInput());
+    }
 
-        // Configure container
+    public void submitNewPlayerInput() {
+        gameController.createPlayer(newPlayerTextField.getText());
+
+        if (gameController.getNumPlayers() < 2) {
+            newPlayerLabel.setText("Player 2:");
+            newPlayerTextField.clear();
+            newPlayerTextField.requestFocus();
+            return;
+        }
+
+        stage.setScene(shipPlacementScene);
+    }
+
+    private Parent buildAndGetNewPlayerLayout() {
         HBox newPlayerHBox = new HBox();
         newPlayerHBox.setMinHeight(Style.MIN_LAYOUT_HEIGHT);
         newPlayerHBox.setMinWidth(Style.MIN_LAYOUT_WIDTH);
         newPlayerHBox.setAlignment(Pos.CENTER);
         newPlayerHBox.setPadding(Style.INSETS_DEFAULT);
         newPlayerHBox.setSpacing(Style.SPACING_DEFAULT);
-        newPlayerHBox.getChildren().addAll(newPlayerLabel, newPlayerTextField, submitButton);
-
-        stage.setScene(new Scene(newPlayerHBox));
-    }
-
-    // This method creates the new Player submit Button
-    private Button createNewPlayerSubmitButton(Label newPlayerLabel, TextField newPlayerTextField) {
-
-        Button submitButton = new Button("Submit");
-        submitButton.setFont(Style.FONT_DEFAULT);
-        submitButton.setOnAction(event -> {
-
-            // Create player
-            gameController.createPlayer(newPlayerTextField.getText());
-
-            // If < 2 players... get second player
-            // Else... ask players to place ships
-            if (gameController.getNumPlayers() < 2) {
-                newPlayerLabel.setText("Player 2:");
-                newPlayerTextField.clear();
-                newPlayerTextField.requestFocus();
-            } else {
-                stage.setScene(shipPlacementScene);
-            }
-        });
-
-        return submitButton;
+        newPlayerHBox.getChildren().addAll(newPlayerLabel, newPlayerTextField, newPlayerSubmitButton);
+        return newPlayerHBox;
     }
 
     // This method creates the Scene where players place their Ships
