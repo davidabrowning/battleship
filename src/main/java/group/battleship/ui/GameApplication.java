@@ -37,21 +37,32 @@ public class GameApplication extends Application {
     // This method runs when the Application starts
     @Override
     public void start(Stage stage) {
+        this.stage = stage;
+        buildGUI();
+    }
 
-        // Create the Scenes
-        newPlayerScene = createNewPlayerScene();
+    public void buildGUI() {
+        buildScenes();
+        buildStage();
+    }
+
+    public void buildScenes() {
+        buildNewPlayerScene();
+        buildShipPlacementScene();
+        buildGameplayScene();
         shipPlacementScene = null;
         gameplayScene = null;
+    }
 
-        // Configure the Stage
-        this.stage = stage;
+    public void buildStage() {
         stage.setTitle("Desktop Battleship");
         stage.setScene(newPlayerScene);
         stage.show();
     }
 
+
     // This method creates the Scene where new players enter their names
-    private Scene createNewPlayerScene() {
+    private void buildNewPlayerScene() {
 
         // Configure components
         Label newPlayerLabel = new Label("Player 1:");
@@ -69,7 +80,7 @@ public class GameApplication extends Application {
         newPlayerHBox.setSpacing(Style.SPACING_DEFAULT);
         newPlayerHBox.getChildren().addAll(newPlayerLabel, newPlayerTextField, submitButton);
 
-        return new Scene(newPlayerHBox);
+        stage.setScene(new Scene(newPlayerHBox));
     }
 
     // This method creates the new Player submit Button
