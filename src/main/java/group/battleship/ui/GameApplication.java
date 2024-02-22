@@ -50,7 +50,6 @@ public class GameApplication extends Application {
         buildNewPlayerScene();
         buildShipPlacementScene();
         buildGameplayScene();
-        shipPlacementScene = null;
         gameplayScene = null;
     }
 
@@ -100,7 +99,7 @@ public class GameApplication extends Application {
                 newPlayerTextField.clear();
                 newPlayerTextField.requestFocus();
             } else {
-                stage.setScene(createShipPlacementScene());
+                stage.setScene(shipPlacementScene);
             }
         });
 
@@ -109,7 +108,7 @@ public class GameApplication extends Application {
 
     // This method creates the Scene where players place their Ships
     // at the beginning of the game
-    private Scene createShipPlacementScene() {
+    private void buildShipPlacementScene() {
 
         // Swap active Player if necessary
         if (gameController.allShipsArePlaced(gameController.getActivePlayer())) {
@@ -162,7 +161,7 @@ public class GameApplication extends Application {
                         stage.setScene(createGameplayScene());
                     } else {
                         // Redraw shipPlacement Scene with updated Ship values
-                        stage.setScene(createShipPlacementScene());
+                        stage.setScene(shipPlacementScene);
                     }
                 }
             });
@@ -181,15 +180,15 @@ public class GameApplication extends Application {
         shipPlacementLayout.setPadding(Style.INSETS_DEFAULT);
         shipPlacementLayout.getChildren().addAll(placeShipLabel, placeShipsGrid);
 
-        Scene scene = new Scene(shipPlacementLayout);
+        shipPlacementScene = new Scene(shipPlacementLayout);
 
-        scene.setOnKeyPressed(event -> {
+        shipPlacementScene.setOnKeyPressed(event -> {
             if (event.getCode().toString().equals("R")) {
                 gameController.rotateShipPlacement(player);
             }
         });
 
-        return scene;
+        stage.setScene(shipPlacementScene);
     }
 
     public void resetOpenSeaTilesDuringShipPlacement(Fleet f, List<Button> seaTiles) {
