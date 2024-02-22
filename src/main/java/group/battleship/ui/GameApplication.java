@@ -251,17 +251,14 @@ public class GameApplication extends Application {
     }
 
     private void buildGameplayInputs() {
-        // Create components: Instruction Labels
         gameplayAttackLabels = new Label[2];
-        gameplayAttackLabels[0] = new Label(gameController.getPlayers().get(0) + "'s attempts:");
-        gameplayAttackLabels[1] = new Label(gameController.getPlayers().get(1) + "'s attempts:");
-        gameplayAttackLabels[0].setFont(Style.FONT_DEFAULT);
-        gameplayAttackLabels[1].setFont(Style.FONT_DEFAULT);
-
-        // Create components: Sea grids where other player's Ships are hiding
         gameplayGrids = new GridPane[2];
-        buildGameplayGrid(0);
-        buildGameplayGrid(1);
+
+        for (int playerNum = 0; playerNum < 2; playerNum++) {
+            gameplayAttackLabels[playerNum] = new Label(gameController.getPlayers().get(0) + "'s attempts:");
+            gameplayAttackLabels[playerNum].setFont(Style.FONT_DEFAULT);
+            buildGameplayGrid(playerNum);
+        }
     }
 
     private void buildAndGetGameplayLayout() {
@@ -270,7 +267,6 @@ public class GameApplication extends Application {
     }
 
     private void buildPlayerAttackVBoxes() {
-        // Create components: Container for Player 1's Label and grid
         for (int playerNum = 0; playerNum < 2; playerNum++) {
             attackInputVBoxes[playerNum] = new VBox();
             attackInputVBoxes[playerNum].setAlignment(Pos.CENTER);
@@ -281,7 +277,6 @@ public class GameApplication extends Application {
     }
 
     private void buildGameplayLayout() {
-        // Add components to layout
         gameplayLayout = new HBox();
         gameplayLayout.setMinWidth(Style.MIN_LAYOUT_WIDTH);
         gameplayLayout.setMinHeight(Style.MIN_LAYOUT_HEIGHT);
