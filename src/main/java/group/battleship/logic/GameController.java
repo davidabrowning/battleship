@@ -77,7 +77,6 @@ public class GameController {
 
     // Places a Ship at a given location
     public void placeShip(Ship ship, int tileNum) {
-        System.out.println("Placing " + ship + " at location " + tileNum + " for " + game.getActivePlayer());
         if (game.getActivePlayer().placeShipHorizontally()) {
             for (int i = 0; i < ship.getSize(); i++) {
                 ship.addLocation(tileNum + i);

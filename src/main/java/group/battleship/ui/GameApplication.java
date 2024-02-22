@@ -267,6 +267,7 @@ public class GameApplication extends Application {
         playerTwoAttackLabel.setFont(Style.FONT_DEFAULT);
 
         // Create components: Sea grids where other player's Ships are hiding
+        gameplayGrids = new GridPane[2];
         buildGameplayGrid(0);
         buildGameplayGrid(1);
     }
@@ -312,7 +313,6 @@ public class GameApplication extends Application {
         List<Button> seaButtons = new ArrayList<>();
 
         // Create input grid
-        gameplayGrids = new GridPane[2];
         gameplayGrids[playerNum] = new GridPane();
         gameplayGrids[playerNum].setAlignment(Pos.CENTER);
         for (int i = 0; i < 100; i++) {
@@ -337,11 +337,6 @@ public class GameApplication extends Application {
 
         seaButton.setOnMouseEntered(event -> handleAttackingMouseHover(attackedPlayer, tileNum, seaButtons));
         seaButton.setOnAction(event -> handleAttackingMouseClick(attackedPlayer, tileNum, seaButtons));
-
-
-        seaButton.setOnAction(event -> {
-
-        });
     }
 
     private void handleAttackingMouseHover(Player attackedPlayer, int tileNum, List<Button> seaButtons) {
@@ -365,7 +360,7 @@ public class GameApplication extends Application {
 
         // Reset button colors
         for (int j = 0; j < 100; j++) {
-            if (attackedPlayer.getShotsSustained().contains(j)) {
+            if (!attackedPlayer.getShotsSustained().contains(j)) {
                 seaButtons.get(j).setBackground(Background.fill(Color.LIGHTBLUE));
             }
         }
@@ -392,23 +387,24 @@ public class GameApplication extends Application {
         }
 
         gameController.processAttack(attackedPlayer, tileNum);
-        if (attackedFleet.containsHitLocation(tileNum)) {
-            seaButtons.get(tileNum).setBackground(Background.fill(Color.RED));
-        } else {
-            seaButtons.get(tileNum).setBackground(Background.fill(Color.WHITE));
-        }
+        updateShipColorsDuringGameplay(attackedPlayer, seaButtons);
+    }
 
+    public void updateShipColorsDuringGameplay(Player attackedPlayer, List<Button> attackedTiles) {
+        Fleet attackedFleet = attackedPlayer.getFleet();
         // Update Ship colors
         for (int k = 0; k < 100; k++) {
-            if (gameController.isGameOver()) {
-                if (attackedFleet.containsSunkShip(k)) {
-                    seaButtons.get(k).setBackground(Background.fill(Color.GREEN));
-                }
-
+            if (attackedFleet.containsSunkShip(k)) {
+                attackedTiles.get(k).setBackground(Background.fill((Color.DARKRED)));
+            } else if (attackedFleet.containsHitLocation(k)) {
+                attackedTiles.get(k).setBackground(Background.fill(Color.RED));
+            } else if (attackedPlayer.getShotsSustained().contains(k)) {
+                attackedTiles.get(k).setBackground(Background.fill(Color.WHITE));
             } else {
-                if (attackedFleet.containsSunkShip(k)) {
-                    seaButtons.get(k).setBackground(Background.fill(Color.DARKRED));
-                }
+                attackedTiles.get(k).setBackground(Background.fill(Color.LIGHTBLUE));
+            }
+            if (gameController.isGameOver() && attackedFleet.containsSunkShip(k)) {
+                attackedTiles.get(k).setBackground(Background.fill(Color.GREEN));
             }
         }
     }
