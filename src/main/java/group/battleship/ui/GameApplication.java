@@ -9,10 +9,8 @@ import group.battleship.domain.*;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -27,11 +25,13 @@ public class GameApplication extends Application {
     private Stage stage;
 
     private Scene newPlayerScene;
+    private HBox newPlayerHBox;
     private Label newPlayerLabel;
     private TextField newPlayerTextField;
     private Button newPlayerSubmitButton;
 
     private Scene shipPlacementScene;
+    private VBox shipPlacementLayout;
     private Label placeShipLabel;
     private List<Button> shipPlacementSeaTiles;
     private GridPane shipPlacementGridPane;
@@ -40,6 +40,14 @@ public class GameApplication extends Application {
     private Ship shipToPlace;
 
     private Scene gameplayScene;
+    private HBox gameplayLayout;
+    private Label playerOneAttackLabel;
+    private Label playerTwoAttackLabel;
+    //private GridPane playerOneGameplayGrid;
+    //private GridPane playerTwoGameplayGrid;
+    GridPane[] gameplayGrids;
+    private VBox playerOneAttackVBox;
+    private VBox playerTwoAttackVBox;
 
     public GameApplication() {
         gameController = new GameController();
@@ -73,8 +81,8 @@ public class GameApplication extends Application {
 
     private void buildNewPlayerScene() {
         buildNewPlayerSubmissionInput();
-        Parent newPlayerLayout = buildAndGetNewPlayerLayout();
-        newPlayerScene = new Scene(newPlayerLayout);
+        buildNewPlayerLayout();
+        newPlayerScene = new Scene(newPlayerHBox);
     }
 
     public void buildNewPlayerSubmissionInput() {
@@ -101,15 +109,14 @@ public class GameApplication extends Application {
         stage.setScene(shipPlacementScene);
     }
 
-    private Parent buildAndGetNewPlayerLayout() {
-        HBox newPlayerHBox = new HBox();
+    private void buildNewPlayerLayout() {
+        newPlayerHBox = new HBox();
         newPlayerHBox.setMinHeight(Style.MIN_LAYOUT_HEIGHT);
         newPlayerHBox.setMinWidth(Style.MIN_LAYOUT_WIDTH);
         newPlayerHBox.setAlignment(Pos.CENTER);
         newPlayerHBox.setPadding(Style.INSETS_DEFAULT);
         newPlayerHBox.setSpacing(Style.SPACING_DEFAULT);
         newPlayerHBox.getChildren().addAll(newPlayerLabel, newPlayerTextField, newPlayerSubmitButton);
-        return newPlayerHBox;
     }
 
     private void buildShipPlacementScene() {
@@ -121,7 +128,7 @@ public class GameApplication extends Application {
         buildShipPlacementInstructionLabel();
         buildShipPlacementGridPane();
         updatePlacedShipTilesToGray();
-        Parent shipPlacementLayout = buildAndGetShipPlacementLayout();
+        buildShipPlacementLayout();
         shipPlacementScene = new Scene(shipPlacementLayout);
         shipPlacementScene.setOnKeyPressed(event -> handleShipPlacementKeyboardEntry(event));
         stage.setScene(shipPlacementScene);
@@ -227,15 +234,14 @@ public class GameApplication extends Application {
         }
     }
 
-    private Parent buildAndGetShipPlacementLayout() {
-        VBox shipPlacementLayout = new VBox();
+    private void buildShipPlacementLayout() {
+        shipPlacementLayout = new VBox();
         shipPlacementLayout.setMinHeight(Style.MIN_LAYOUT_HEIGHT);
         shipPlacementLayout.setMinWidth(Style.MIN_LAYOUT_WIDTH);
         shipPlacementLayout.setAlignment(Pos.CENTER);
         shipPlacementLayout.setSpacing(Style.SPACING_DEFAULT);
         shipPlacementLayout.setPadding(Style.INSETS_DEFAULT);
         shipPlacementLayout.getChildren().addAll(placeShipLabel, shipPlacementGridPane);
-        return shipPlacementLayout;
     }
 
     public void handleShipPlacementKeyboardEntry(KeyEvent k) {
@@ -248,137 +254,162 @@ public class GameApplication extends Application {
     private void buildGameplayScene() {
         // Update logic
         gameController.setActivePlayer(gameController.getPlayers().get(0));
+        buildGameplayInputs();
+        buildAndGetGameplayLayout();
+        gameplayScene = new Scene(gameplayLayout);
+    }
 
+    private void buildGameplayInputs() {
         // Create components: Instruction Labels
-        Label playerOneAttackLabel = new Label(gameController.getPlayers().get(0) + "'s attempts:");
-        Label playerTwoAttackLabel = new Label(gameController.getPlayers().get(1) + "'s attempts:");
+        playerOneAttackLabel = new Label(gameController.getPlayers().get(0) + "'s attempts:");
+        playerTwoAttackLabel = new Label(gameController.getPlayers().get(1) + "'s attempts:");
         playerOneAttackLabel.setFont(Style.FONT_DEFAULT);
         playerTwoAttackLabel.setFont(Style.FONT_DEFAULT);
 
         // Create components: Sea grids where other player's Ships are hiding
-        GridPane playerOneGameplayGrid = createGameplayGrid(gameController.getPlayers().get(0));
-        GridPane playerTwoGameplayGrid = createGameplayGrid(gameController.getPlayers().get(1));
+        buildGameplayGrid(0);
+        buildGameplayGrid(1);
+    }
 
+    private void buildAndGetGameplayLayout() {
+        buildPlayerAttackVBoxes();
+        buildGameplayLayout();
+    }
+
+    private void buildPlayerAttackVBoxes() {
         // Create components: Container for Player 1's Label and grid
-        VBox playerOneAttackVBox = new VBox();
+        playerOneAttackVBox = new VBox();
         playerOneAttackVBox.setAlignment(Pos.CENTER);
         playerOneAttackVBox.setPadding(Style.INSETS_LARGE);
         playerOneAttackVBox.setSpacing(Style.SPACING_LARGE);
-        playerOneAttackVBox.getChildren().addAll(playerOneAttackLabel, playerOneGameplayGrid);
+        playerOneAttackVBox.getChildren().addAll(playerOneAttackLabel, gameplayGrids[0]);
 
         // Create components: Container for Player 2's Label and grid
-        VBox playerTwoAttackVBox = new VBox();
+        playerTwoAttackVBox = new VBox();
         playerTwoAttackVBox.setAlignment(Pos.CENTER);
         playerTwoAttackVBox.setPadding(Style.INSETS_LARGE);
         playerTwoAttackVBox.setSpacing(Style.SPACING_LARGE);
-        playerTwoAttackVBox.getChildren().addAll(playerTwoAttackLabel, playerTwoGameplayGrid);
+        playerTwoAttackVBox.getChildren().addAll(playerTwoAttackLabel, gameplayGrids[1]);
+    }
 
+    private void buildGameplayLayout() {
         // Add components to layout
-        HBox gameplayLayout = new HBox();
+        gameplayLayout = new HBox();
         gameplayLayout.setMinWidth(Style.MIN_LAYOUT_WIDTH);
         gameplayLayout.setMinHeight(Style.MIN_LAYOUT_HEIGHT);
         gameplayLayout.setSpacing(Style.SPACING_DEFAULT);
         gameplayLayout.setPadding(Style.INSETS_DEFAULT);
         gameplayLayout.setAlignment(Pos.CENTER);
         gameplayLayout.getChildren().addAll(playerOneAttackVBox, playerTwoAttackVBox);
-
-        gameplayScene = new Scene(gameplayLayout);
     }
 
     // This method creates the grid where the other Player's ships are hiding
-    private GridPane createGameplayGrid(Player player) {
+    private void buildGameplayGrid(int playerNum) {
 
-        Player otherPlayer = gameController.getOtherPlayer(player);
+        Player thisPlayer = gameController.getPlayers().get(playerNum);
+        Player otherPlayer = gameController.getOtherPlayer(thisPlayer);
         Fleet otherFleet = otherPlayer.getFleet();
         List<Button> seaButtons = new ArrayList<>();
 
         // Create input grid
-        GridPane gameplayGrid = new GridPane();
-        gameplayGrid.setAlignment(Pos.CENTER);
+        gameplayGrids = new GridPane[2];
+        gameplayGrids[playerNum] = new GridPane();
+        gameplayGrids[playerNum].setAlignment(Pos.CENTER);
         for (int i = 0; i < 100; i++) {
-            int tileNum = i;
-
-            // Create and configure this button
-            Button seaButton = new Button();
-            seaButton.setFont(Style.FONT_SMALL);
-            seaButton.setMinWidth(50);
-            seaButton.setMinHeight(50);
-            seaButton.setBackground(Background.fill(Color.LIGHTBLUE));
-            seaButton.setBorder(new Border(Style.BORDER_BLACK));
-
-            // Add this Button to the grid and the List of Buttons
-            GridPane.setRowIndex(seaButton, tileNum / 10);
-            GridPane.setColumnIndex(seaButton, tileNum % 10);
-            gameplayGrid.getChildren().add(seaButton);
-            seaButtons.add(seaButton);
-
-            // On hover...
-            seaButton.setOnMouseEntered(event -> {
-                // If game is over, don't do anything
-                if (gameController.isGameOver()) {
-                    // Set any unhit tiles to GRAY
-                    for (int j = 0; j < 100; j++) {
-                        if (otherFleet.containsLocation(j) && !otherFleet.containsHitLocation(j)) {
-                            seaButtons.get(j).setBackground(Background.fill(Color.GRAY));
-                        }
-                    }
-                    return;
-                }
-
-                // If it is actually this Player's turn right now...
-                if (gameController.getActivePlayer() == player) {
-                    // Reset button colors
-                    for (int j = 0; j < 100; j++) {
-
-                        // Reset unattempted tiles to LIGHTBLUE
-                        if (!otherPlayer.getShotsSustained().contains(j)) {
-                            seaButtons.get(j).setBackground(Background.fill(Color.LIGHTBLUE));
-                        }
-                    }
-
-                    // Update the hovered Button's color to ORANGE
-                    if (!otherPlayer.getShotsSustained().contains(tileNum)) {
-                        seaButton.setBackground(Background.fill(Color.ORANGE));
-                    }
-                }
-            });
-
-            seaButton.setOnAction(event -> {
-                if (gameController.isGameOver()) {
-                    return;
-                }
-
-                if (gameController.getActivePlayer() != player) {
-                    return;
-                }
-
-                if (otherPlayer.getShotsSustained().contains(tileNum)) {
-                    return;
-                }
-
-                gameController.processAttack(otherPlayer, tileNum);
-                if (otherFleet.containsHitLocation(tileNum)) {
-                    seaButton.setBackground(Background.fill(Color.RED));
-                } else {
-                    seaButton.setBackground(Background.fill(Color.WHITE));
-                }
-
-                // Update Ship colors
-                for (int k = 0; k < 100; k++) {
-                    if (gameController.isGameOver()) {
-                        if (otherFleet.containsSunkShip(k)) {
-                            seaButtons.get(k).setBackground(Background.fill(Color.GREEN));
-                        }
-
-                    } else {
-                        if (otherFleet.containsSunkShip(k)) {
-                            seaButtons.get(k).setBackground(Background.fill(Color.DARKRED));
-                        }
-                    }
-                }
-            });
-
+            buildAttackSeaTileButton(playerNum, otherPlayer, i, seaButtons);
         }
-        return gameplayGrid;
+    }
+
+    private void buildAttackSeaTileButton(int attackingPlayerNum, Player attackedPlayer, int tileNum, List<Button> seaButtons) {
+        // Create and configure this button
+        Button seaButton = new Button();
+        seaButton.setFont(Style.FONT_SMALL);
+        seaButton.setMinWidth(50);
+        seaButton.setMinHeight(50);
+        seaButton.setBackground(Background.fill(Color.LIGHTBLUE));
+        seaButton.setBorder(new Border(Style.BORDER_BLACK));
+
+        // Add this Button to the grid and the List of Buttons
+        GridPane.setRowIndex(seaButton, tileNum / 10);
+        GridPane.setColumnIndex(seaButton, tileNum % 10);
+        gameplayGrids[attackingPlayerNum].getChildren().add(seaButton);
+        seaButtons.add(seaButton);
+
+        seaButton.setOnMouseEntered(event -> handleAttackingMouseHover(attackedPlayer, tileNum, seaButtons));
+        seaButton.setOnAction(event -> handleAttackingMouseClick(attackedPlayer, tileNum, seaButtons));
+
+
+        seaButton.setOnAction(event -> {
+
+        });
+    }
+
+    private void handleAttackingMouseHover(Player attackedPlayer, int tileNum, List<Button> seaButtons) {
+        Fleet otherFleet = attackedPlayer.getFleet();
+
+        // If it is not this player's turn, quit
+        if (gameController.getActivePlayer() == attackedPlayer) {
+            return;
+        }
+
+        // If game is over, quit
+        if (gameController.isGameOver()) {
+            // Set any unhit tiles to GRAY
+            for (int j = 0; j < 100; j++) {
+                if (otherFleet.containsLocation(j) && !otherFleet.containsHitLocation(j)) {
+                    seaButtons.get(j).setBackground(Background.fill(Color.GRAY));
+                }
+            }
+            return;
+        }
+
+        // Reset button colors
+        for (int j = 0; j < 100; j++) {
+            if (attackedPlayer.getShotsSustained().contains(j)) {
+                seaButtons.get(j).setBackground(Background.fill(Color.LIGHTBLUE));
+            }
+        }
+
+        // Update the hovered Button's color to ORANGE
+        if (!attackedPlayer.getShotsSustained().contains(tileNum)) {
+            seaButtons.get(tileNum).setBackground(Background.fill(Color.ORANGE));
+        }
+    }
+
+    private void handleAttackingMouseClick(Player attackedPlayer, int tileNum, List<Button> seaButtons) {
+        Fleet attackedFleet = attackedPlayer.getFleet();
+
+        if (gameController.isGameOver()) {
+            return;
+        }
+
+        if (gameController.getActivePlayer() == attackedPlayer) {
+            return;
+        }
+
+        if (attackedPlayer.getShotsSustained().contains(tileNum)) {
+            return;
+        }
+
+        gameController.processAttack(attackedPlayer, tileNum);
+        if (attackedFleet.containsHitLocation(tileNum)) {
+            seaButtons.get(tileNum).setBackground(Background.fill(Color.RED));
+        } else {
+            seaButtons.get(tileNum).setBackground(Background.fill(Color.WHITE));
+        }
+
+        // Update Ship colors
+        for (int k = 0; k < 100; k++) {
+            if (gameController.isGameOver()) {
+                if (attackedFleet.containsSunkShip(k)) {
+                    seaButtons.get(k).setBackground(Background.fill(Color.GREEN));
+                }
+
+            } else {
+                if (attackedFleet.containsSunkShip(k)) {
+                    seaButtons.get(k).setBackground(Background.fill(Color.DARKRED));
+                }
+            }
+        }
     }
 }
