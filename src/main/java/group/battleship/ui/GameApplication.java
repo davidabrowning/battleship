@@ -50,7 +50,6 @@ public class GameApplication extends Application {
         buildNewPlayerScene();
         buildShipPlacementScene();
         buildGameplayScene();
-        gameplayScene = null;
     }
 
     public void buildStage() {
@@ -158,7 +157,7 @@ public class GameApplication extends Application {
                 if (gameController.isValidShipPlacementLocation(tileNum, ship.getSize(), fleet)) {
                     gameController.placeShip(ship, tileNum);
                     if (gameController.allShipsArePlaced()) {
-                        stage.setScene(createGameplayScene());
+                        stage.setScene(gameplayScene);
                     } else {
                         // Redraw shipPlacement Scene with updated Ship values
                         stage.setScene(shipPlacementScene);
@@ -222,7 +221,7 @@ public class GameApplication extends Application {
     }
 
     // This method creates the Scene where both Players attempt to hit each other's Ships
-    private Scene createGameplayScene() {
+    private void buildGameplayScene() {
         // Update logic
         gameController.setActivePlayer(gameController.getPlayers().get(0));
 
@@ -259,7 +258,7 @@ public class GameApplication extends Application {
         gameplayLayout.setAlignment(Pos.CENTER);
         gameplayLayout.getChildren().addAll(playerOneAttackVBox, playerTwoAttackVBox);
 
-        return new Scene(gameplayLayout);
+        gameplayScene = new Scene(gameplayLayout);
     }
 
     // This method creates the grid where the other Player's ships are hiding
