@@ -44,8 +44,9 @@ public class GameApplication extends Application {
     private HBox gameplayLayout;
     private Label[] gameplayAttackLabels;
     private GridPane[] gameplayGrids;
-    private VBox playerOneAttackVBox;
-    private VBox playerTwoAttackVBox;
+    private VBox[] attackInputVBoxes;
+    //private VBox playerOneAttackVBox;
+    //private VBox playerTwoAttackVBox;
 
     public GameApplication() {
         gameController = new GameController();
@@ -270,18 +271,13 @@ public class GameApplication extends Application {
 
     private void buildPlayerAttackVBoxes() {
         // Create components: Container for Player 1's Label and grid
-        playerOneAttackVBox = new VBox();
-        playerOneAttackVBox.setAlignment(Pos.CENTER);
-        playerOneAttackVBox.setPadding(Style.INSETS_LARGE);
-        playerOneAttackVBox.setSpacing(Style.SPACING_LARGE);
-        playerOneAttackVBox.getChildren().addAll(gameplayAttackLabels[0], gameplayGrids[0]);
-
-        // Create components: Container for Player 2's Label and grid
-        playerTwoAttackVBox = new VBox();
-        playerTwoAttackVBox.setAlignment(Pos.CENTER);
-        playerTwoAttackVBox.setPadding(Style.INSETS_LARGE);
-        playerTwoAttackVBox.setSpacing(Style.SPACING_LARGE);
-        playerTwoAttackVBox.getChildren().addAll(gameplayAttackLabels[1], gameplayGrids[1]);
+        for (int playerNum = 0; playerNum < 2; playerNum++) {
+            attackInputVBoxes[playerNum] = new VBox();
+            attackInputVBoxes[playerNum].setAlignment(Pos.CENTER);
+            attackInputVBoxes[playerNum].setPadding(Style.INSETS_LARGE);
+            attackInputVBoxes[playerNum].setSpacing(Style.SPACING_LARGE);
+            attackInputVBoxes[playerNum].getChildren().addAll(gameplayAttackLabels[playerNum], gameplayGrids[playerNum]);
+        }
     }
 
     private void buildGameplayLayout() {
@@ -292,7 +288,7 @@ public class GameApplication extends Application {
         gameplayLayout.setSpacing(Style.SPACING_DEFAULT);
         gameplayLayout.setPadding(Style.INSETS_DEFAULT);
         gameplayLayout.setAlignment(Pos.CENTER);
-        gameplayLayout.getChildren().addAll(playerOneAttackVBox, playerTwoAttackVBox);
+        gameplayLayout.getChildren().addAll(attackInputVBoxes[0], attackInputVBoxes[1]);
     }
 
     // This method creates the grid where the other Player's ships are hiding
