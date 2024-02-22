@@ -31,6 +31,13 @@ public class GameApplication extends Application {
     private Button newPlayerSubmitButton;
 
     private Scene shipPlacementScene;
+    private Label placeShipLabel;
+    private List<Button> shipPlacementSeaTiles;
+    private GridPane shipPlacementGridPane;
+    private Player playerToPlace;
+    private Fleet fleetToPlace;
+    private Ship shipToPlace;
+
     private Scene gameplayScene;
 
     public GameApplication() {
@@ -105,70 +112,17 @@ public class GameApplication extends Application {
         return newPlayerHBox;
     }
 
-    // This method creates the Scene where players place their Ships
-    // at the beginning of the game
     private void buildShipPlacementScene() {
 
-        // Swap active Player if necessary
-        if (gameController.allShipsArePlaced(gameController.getActivePlayer())) {
-            gameController.swapActivePlayer();
-        }
+        shipPlacementSeaTiles = new ArrayList<Button>();
 
-        // Get Player info
-        Player player = gameController.getActivePlayer();
-        Fleet fleet = player.getFleet();
-        Ship ship = gameController.getFirstUnplacedShip(player);
-        List<Button> seaTiles = new ArrayList<>();
-
-        // Create instruction label
-        Label placeShipLabel = new Label(player + ", please place your " + ship + " (R to rotate):");
-        placeShipLabel.setFont(Style.FONT_DEFAULT);
-
-        // Create input grid
-        GridPane placeShipsGrid = new GridPane();
-        placeShipsGrid.setAlignment(Pos.CENTER);
-        for (int i = 0; i < 100; i++) {
-            int tileNum = i;
-
-            // Configure this location Button
-            Button shipButton = new Button();
-            shipButton.setMinWidth(50);
-            shipButton.setMinHeight(50);
-            shipButton.setBackground(Background.fill(Color.LIGHTBLUE));
-            shipButton.setBorder(new Border(Style.BORDER_BLACK));
-
-            // Add this Button to the Ship placement grid
-            GridPane.setRowIndex(shipButton, tileNum / 10);
-            GridPane.setColumnIndex(shipButton, tileNum % 10);
-            placeShipsGrid.getChildren().add(shipButton);
-            seaTiles.add(shipButton);
-
-            // On hover, reset open tiles and show updated Ship placement shadow
-            shipButton.setOnMouseEntered(event -> {
-                resetOpenSeaTilesDuringShipPlacement(fleet, seaTiles);
-                if (gameController.isValidShipPlacementLocation(tileNum, ship.getSize(), fleet)) {
-                    showPotentialShipPlacementShadow(player, ship, tileNum, seaTiles);
-                }
-            });
-
-            // On click...
-            shipButton.setOnAction(event -> {
-                // Place the Ship at this location and set the Scene to place the next Ship
-                if (gameController.isValidShipPlacementLocation(tileNum, ship.getSize(), fleet)) {
-                    gameController.placeShip(ship, tileNum);
-                    if (gameController.allShipsArePlaced()) {
-                        stage.setScene(gameplayScene);
-                    } else {
-                        // Redraw shipPlacement Scene with updated Ship values
-                        stage.setScene(shipPlacementScene);
-                    }
-                }
-            });
-
-        }
+        swapActiveShipPlacementPlayerIfNecessary();
+        updatePlayerAndFleetAndShipToPlaceValues();
+        buildShipPlacementInstructionLabel();
+        buildShipPlacementGridPane();
 
         // Update already placed tiles to GRAY
-        updatePlacedShipTilesToGray(player, seaTiles);
+        updatePlacedShipTilesToGray(playerToPlace, shipPlacementSeaTiles);
 
         // Put Label and input grid on layout
         VBox shipPlacementLayout = new VBox();
@@ -177,17 +131,84 @@ public class GameApplication extends Application {
         shipPlacementLayout.setAlignment(Pos.CENTER);
         shipPlacementLayout.setSpacing(Style.SPACING_DEFAULT);
         shipPlacementLayout.setPadding(Style.INSETS_DEFAULT);
-        shipPlacementLayout.getChildren().addAll(placeShipLabel, placeShipsGrid);
+        shipPlacementLayout.getChildren().addAll(placeShipLabel, shipPlacementGridPane);
 
         shipPlacementScene = new Scene(shipPlacementLayout);
 
         shipPlacementScene.setOnKeyPressed(event -> {
             if (event.getCode().toString().equals("R")) {
-                gameController.rotateShipPlacement(player);
+                gameController.rotateShipPlacement(playerToPlace);
             }
         });
 
         stage.setScene(shipPlacementScene);
+    }
+
+    public void swapActiveShipPlacementPlayerIfNecessary() {
+        if (gameController.allShipsArePlaced(gameController.getActivePlayer())) {
+            gameController.swapActivePlayer();
+        }
+    }
+
+    public void updatePlayerAndFleetAndShipToPlaceValues() {
+        playerToPlace = gameController.getActivePlayer();
+        fleetToPlace = playerToPlace.getFleet();
+        shipToPlace = gameController.getFirstUnplacedShip(playerToPlace);
+    }
+
+    public void buildShipPlacementInstructionLabel() {
+        Player p = gameController.getActivePlayer();
+        Ship s = gameController.getFirstUnplacedShip(p);
+        placeShipLabel = new Label(p + ", please place your " + s + " (R to rotate):");
+        placeShipLabel.setFont(Style.FONT_DEFAULT);
+    }
+
+    public void buildShipPlacementGridPane() {
+        // Create input grid
+        shipPlacementGridPane = new GridPane();
+        shipPlacementGridPane.setAlignment(Pos.CENTER);
+        for (int i = 0; i < 100; i++) {
+            buildShipPlacementSeaTileButton(i);
+        }
+    }
+
+    public void buildShipPlacementSeaTileButton(int tileNum) {
+        Button shipButton = new Button();
+        shipButton.setMinWidth(50);
+        shipButton.setMinHeight(50);
+        shipButton.setBackground(Background.fill(Color.LIGHTBLUE));
+        shipButton.setBorder(new Border(Style.BORDER_BLACK));
+
+        // Add this Button to the Ship placement grid
+        GridPane.setRowIndex(shipButton, tileNum / 10);
+        GridPane.setColumnIndex(shipButton, tileNum % 10);
+        shipPlacementGridPane.getChildren().add(shipButton);
+        shipPlacementSeaTiles.add(shipButton);
+
+        shipButton.setOnMouseEntered(event -> handleShipPlacementSeaTileButtonHoverEvent(tileNum));
+        shipButton.setOnAction(event -> handleShipPlacementSeaTileButtonClick(tileNum));
+    }
+
+    public void handleShipPlacementSeaTileButtonHoverEvent(int tileNum) {
+        resetOpenSeaTilesDuringShipPlacement(fleetToPlace, shipPlacementSeaTiles);
+        if (gameController.isValidShipPlacementLocation(tileNum, shipToPlace.getSize(), fleetToPlace)) {
+            showPotentialShipPlacementShadow(playerToPlace, shipToPlace, tileNum, shipPlacementSeaTiles);
+        }
+    }
+
+    public void handleShipPlacementSeaTileButtonClick(int tileNum) {
+        // If invalid location, do nothing
+        if (!gameController.isValidShipPlacementLocation(tileNum, shipToPlace.getSize(), fleetToPlace)) {
+            return;
+        }
+
+        // Else, place ship and either advance to gameplay or redraw shipPlacement Scene with updated Ship values
+        gameController.placeShip(shipToPlace, tileNum);
+        if (gameController.allShipsArePlaced()) {
+            stage.setScene(gameplayScene);
+        } else {
+            stage.setScene(shipPlacementScene);
+        }
     }
 
     public void resetOpenSeaTilesDuringShipPlacement(Fleet f, List<Button> seaTiles) {
