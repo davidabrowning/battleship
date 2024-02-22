@@ -27,7 +27,6 @@ public class GameController {
     public boolean placeShipHorizontally(Player p) { return p.placeShipHorizontally(); }
     public void rotateShipPlacement(Player p) { p.rotateShipPlacement(); }
     public void swapActivePlayer() { game.swapActivePlayer(); }
-    public boolean allShipsArePlaced(Player p) { return !p.getFleet().hasNotBeenPlaced(); }
 
     // This method creates a new Player and adds it to the Game
     public void createPlayer(String playerName) {
@@ -88,6 +87,10 @@ public class GameController {
                 ship.addLocation(tileNum + i * 10);
             }
         }
+    }
+
+    public boolean allShipsArePlaced(Player p) {
+        return !p.getFleet().hasNotBeenPlaced();
     }
 
     public boolean allShipsArePlaced() {
