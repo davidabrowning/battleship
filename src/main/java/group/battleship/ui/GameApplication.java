@@ -42,8 +42,6 @@ public class GameApplication extends Application {
 
     private Scene gameplayScene;
     private HBox gameplayLayout;
-    //private Label playerOneAttackLabel;
-    //private Label playerTwoAttackLabel;
     private Label[] gameplayAttackLabels;
     private GridPane[] gameplayGrids;
     private VBox playerOneAttackVBox;
