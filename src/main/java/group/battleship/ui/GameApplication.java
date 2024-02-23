@@ -316,17 +316,19 @@ public class GameApplication extends Application {
         gameplayGrids[attackingPlayerNum].getChildren().add(seaButton);
         attackSeaTileButtonLists.get(attackingPlayerNum).add(seaButton);
 
-        seaButton.setOnMouseEntered(event -> handleAttackingMouseHover(attackedPlayer, tileNum, seaButtons));
-        seaButton.setOnAction(event -> handleAttackingMouseClick(attackedPlayer, tileNum, seaButtons));
+        seaButton.setOnMouseEntered(event -> handleAttackingMouseHover(attackingPlayer, tileNum));
+        seaButton.setOnAction(event -> handleAttackingMouseClick(attackingPlayer, tileNum));
     }
 
-    private void handleAttackingMouseHover(Player attackedPlayer, int tileNum, List<Button> seaButtons) {
-        Fleet otherFleet = attackedPlayer.getFleet();
-
+    private void handleAttackingMouseHover(Player attackingPlayer, int tileNum) {
         // If it is not this player's turn, quit
-        if (gameController.getActivePlayer() == attackedPlayer) {
+        if (gameController.getActivePlayer() != attackingPlayer) {
             return;
         }
+
+        int attackingPlayerNum = gameController.getPlayers().indexOf(attackingPlayer);
+        Player attackedPlayer = gameController.getOtherPlayer(attackingPlayer);
+        Fleet otherFleet = attackedPlayer.getFleet();
 
         // If game is over, quit
         if (gameController.isGameOver()) {
@@ -342,14 +344,15 @@ public class GameApplication extends Application {
         }
     }
 
-    private void handleAttackingMouseClick(Player attackedPlayer, int tileNum, List<Button> seaButtons) {
+    private void handleAttackingMouseClick(Player attackingPlayer, int tileNum) {
+        Player attackedPlayer = gameController.getOtherPlayer(attackingPlayer);
         Fleet attackedFleet = attackedPlayer.getFleet();
 
         if (gameController.isGameOver()) {
             return;
         }
 
-        if (gameController.getActivePlayer() == attackedPlayer) {
+        if (gameController.getActivePlayer() != attackingPlayer) {
             return;
         }
 
