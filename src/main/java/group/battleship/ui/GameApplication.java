@@ -371,24 +371,37 @@ public class GameApplication extends Application {
         }
 
         gameController.processAttack(attackedPlayer, tileNum);
-        updateShipColorsDuringGameplay(attackedPlayer, seaButtons);
+        updateShipColorsDuringGameplay();
     }
 
-    public void updateShipColorsDuringGameplay(Player attackedPlayer, List<Button> attackedTiles) {
-        Fleet attackedFleet = attackedPlayer.getFleet();
+    public void updateShipColorsDuringGameplay() {
         // Update Ship colors
-        for (int k = 0; k < 100; k++) {
-            if (attackedFleet.containsSunkShip(k)) {
-                attackedTiles.get(k).setBackground(Background.fill((Color.DARKRED)));
-            } else if (attackedFleet.containsHitLocation(k)) {
-                attackedTiles.get(k).setBackground(Background.fill(Color.RED));
-            } else if (attackedPlayer.getShotsSustained().contains(k)) {
-                attackedTiles.get(k).setBackground(Background.fill(Color.WHITE));
-            } else {
-                attackedTiles.get(k).setBackground(Background.fill(Color.LIGHTBLUE));
-            }
-            if (gameController.isGameOver() && attackedFleet.containsSunkShip(k)) {
-                attackedTiles.get(k).setBackground(Background.fill(Color.GREEN));
+        for (int attackingPlayerNum = 0; attackingPlayerNum < 2; attackingPlayerNum++) {
+            Player attackingPlayer = gameController.getPlayer(attackingPlayerNum);
+            Player attackedPlayer = gameController.getOtherPlayer(attackingPlayer);
+            Fleet attackedFleet = attackedPlayer.getFleet();
+
+            for (int k = 0; k < 100; k++) {
+                Button thisSeaTileButton = attackSeaTileButtonLists.get(attackingPlayerNum).get(k);
+                if (attackedFleet.containsSunkShip(k)) {
+                    thisSeaTileButton.setBackground(Background.fill((Color.DARKRED)));
+                } else if (attackedFleet.containsHitLocation(k)) {
+                    thisSeaTileButton.setBackground(Background.fill(Color.RED));
+                } else if (attackedPlayer.getShotsSustained().contains(k)) {
+                    thisSeaTileButton.setBackground(Background.fill(Color.WHITE));
+                } else {
+                    thisSeaTileButton.setBackground(Background.fill(Color.LIGHTBLUE));
+                }
+                if (gameController.isGameOver()) {
+                    // Set winning ships to GREEN
+                    if (attackedFleet.containsSunkShip(k) && attackedFleet.isSunk()) {
+                        thisSeaTileButton.setBackground(Background.fill(Color.GREEN));
+                    }
+                    // Reveal any unhit ships with GRAY
+                    if (attackedFleet.containsLocation(k) && !attackedFleet.containsHitLocation(k)) {
+                        thisSeaTileButton.setBackground(Background.fill(Color.GRAY));
+                    }
+                }
             }
         }
     }
