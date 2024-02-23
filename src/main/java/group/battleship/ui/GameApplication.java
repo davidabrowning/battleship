@@ -45,8 +45,7 @@ public class GameApplication extends Application {
     private Label[] gameplayAttackLabels;
     private GridPane[] gameplayGrids;
     private VBox[] attackInputVBoxes;
-    //private VBox playerOneAttackVBox;
-    //private VBox playerTwoAttackVBox;
+    private List<List<Button>> attackSeaTileButtonLists;
 
     public GameApplication() {
         gameController = new GameController();
@@ -315,7 +314,7 @@ public class GameApplication extends Application {
         GridPane.setRowIndex(seaButton, tileNum / 10);
         GridPane.setColumnIndex(seaButton, tileNum % 10);
         gameplayGrids[attackingPlayerNum].getChildren().add(seaButton);
-        seaButtons.add(seaButton);
+        attackSeaTileButtonLists.get(attackingPlayerNum).add(seaButton);
 
         seaButton.setOnMouseEntered(event -> handleAttackingMouseHover(attackedPlayer, tileNum, seaButtons));
         seaButton.setOnAction(event -> handleAttackingMouseClick(attackedPlayer, tileNum, seaButtons));
@@ -349,7 +348,7 @@ public class GameApplication extends Application {
 
         // Update the hovered Button's color to ORANGE
         if (!attackedPlayer.getShotsSustained().contains(tileNum)) {
-            seaButtons.get(tileNum).setBackground(Background.fill(Color.ORANGE));
+            attackSeaTileButtonLists.get(attackingPlayerNum).get(tileNum).setBackground(Background.fill(Color.ORANGE));
         }
     }
 
