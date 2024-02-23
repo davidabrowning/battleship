@@ -259,7 +259,7 @@ public class GameApplication extends Application {
         for (int playerNum = 0; playerNum < 2; playerNum++) {
             gameplayAttackLabels[playerNum] = new Label(gameController.getPlayers().get(0) + "'s attempts:");
             gameplayAttackLabels[playerNum].setFont(Style.FONT_DEFAULT);
-            buildGameplayGrid(playerNum);
+            buildGameplayGrid(gameController.getPlayer(playerNum));
         }
     }
 
