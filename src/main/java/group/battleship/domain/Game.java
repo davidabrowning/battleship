@@ -15,6 +15,8 @@ public class Game {
         gameOver = false;
     }
 
+    public Player getPlayer(int playerNum) { return players.get(playerNum); }
+
     public void addPlayer(Player p) {
         players.add(p);
         if (activePlayer == null) {
