@@ -304,7 +304,9 @@ public class GameApplication extends Application {
         }
     }
 
-    private void buildAttackSeaTileButton(int attackingPlayerNum, Player attackedPlayer, int tileNum, List<Button> seaButtons) {
+    private void buildAttackSeaTileButton(Player attackingPlayer, int tileNum) {
+        int attackingPlayerNum = gameController.getPlayers().indexOf(attackingPlayer);
+
         // Create and configure this button
         Button seaButton = new Button();
         seaButton.setFont(Style.FONT_SMALL);
