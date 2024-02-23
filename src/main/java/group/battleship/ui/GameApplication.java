@@ -342,12 +342,8 @@ public class GameApplication extends Application {
             return;
         }
 
-        // Reset button colors
-        for (int j = 0; j < 100; j++) {
-            if (!attackedPlayer.getShotsSustained().contains(j)) {
-                seaButtons.get(j).setBackground(Background.fill(Color.LIGHTBLUE));
-            }
-        }
+        // Reset any previously highlighted hovered tiles
+        updateShipColorsDuringGameplay();
 
         // Update the hovered Button's color to ORANGE
         if (!attackedPlayer.getShotsSustained().contains(tileNum)) {
