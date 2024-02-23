@@ -19,6 +19,7 @@ public class GameController {
         return game.getActivePlayer();
     }
     public void setActivePlayer(Player p) { game.setActivePlayer(p); }
+    public Player getPlayer(int playerNum) { return game.getPlayer(playerNum); }
     public List<Player> getPlayers() {
         return game.getPlayers();
     }
