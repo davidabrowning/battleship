@@ -335,12 +335,6 @@ public class GameApplication extends Application {
 
         // If game is over, quit
         if (gameController.isGameOver()) {
-            // Set any unhit tiles to GRAY
-            for (int j = 0; j < 100; j++) {
-                if (otherFleet.containsLocation(j) && !otherFleet.containsHitLocation(j)) {
-                    seaButtons.get(j).setBackground(Background.fill(Color.GRAY));
-                }
-            }
             return;
         }
 
