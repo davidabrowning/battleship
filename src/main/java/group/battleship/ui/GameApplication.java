@@ -257,7 +257,7 @@ public class GameApplication extends Application {
         attackSeaTileButtonLists.add(new ArrayList<Button>());      // For player 2
 
         for (int playerNum = 0; playerNum < 2; playerNum++) {
-            gameplayAttackLabels[playerNum] = new Label(gameController.getPlayers().get(0) + "'s attempts:");
+            gameplayAttackLabels[playerNum] = new Label(gameController.getPlayers().get(playerNum) + "'s attempts:");
             gameplayAttackLabels[playerNum].setFont(Style.FONT_DEFAULT);
             buildGameplayGrid(gameController.getPlayer(playerNum));
         }
