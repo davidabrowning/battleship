@@ -328,7 +328,6 @@ public class GameApplication extends Application {
 
         int attackingPlayerNum = gameController.getPlayers().indexOf(attackingPlayer);
         Player attackedPlayer = gameController.getOtherPlayer(attackingPlayer);
-        Fleet otherFleet = attackedPlayer.getFleet();
 
         // If game is over, quit
         if (gameController.isGameOver()) {
@@ -346,7 +345,6 @@ public class GameApplication extends Application {
 
     private void handleAttackingMouseClick(Player attackingPlayer, int tileNum) {
         Player attackedPlayer = gameController.getOtherPlayer(attackingPlayer);
-        Fleet attackedFleet = attackedPlayer.getFleet();
 
         if (gameController.isGameOver()) {
             return;
