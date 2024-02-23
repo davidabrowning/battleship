@@ -290,14 +290,8 @@ public class GameApplication extends Application {
     }
 
     // This method creates the grid where the other Player's ships are hiding
-    private void buildGameplayGrid(int playerNum) {
-
-        Player thisPlayer = gameController.getPlayers().get(playerNum);
-        Player otherPlayer = gameController.getOtherPlayer(thisPlayer);
-        Fleet otherFleet = otherPlayer.getFleet();
-        List<Button> seaButtons = new ArrayList<>();
-
-        // Create input grid
+    private void buildGameplayGrid(Player attackingPlayer) {
+        int playerNum = gameController.getPlayers().indexOf(attackingPlayer);
         gameplayGrids[playerNum] = new GridPane();
         gameplayGrids[playerNum].setAlignment(Pos.CENTER);
         for (int i = 0; i < 100; i++) {
