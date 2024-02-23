@@ -269,6 +269,7 @@ public class GameApplication extends Application {
     }
 
     private void buildPlayerAttackVBoxes() {
+        attackInputVBoxes = new VBox[2];
         for (int playerNum = 0; playerNum < 2; playerNum++) {
             attackInputVBoxes[playerNum] = new VBox();
             attackInputVBoxes[playerNum].setAlignment(Pos.CENTER);
