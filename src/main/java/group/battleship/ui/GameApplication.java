@@ -252,6 +252,9 @@ public class GameApplication extends Application {
     private void buildGameplayInputs() {
         gameplayAttackLabels = new Label[2];
         gameplayGrids = new GridPane[2];
+        attackSeaTileButtonLists = new ArrayList<List<Button>>();
+        attackSeaTileButtonLists.add(new ArrayList<Button>());      // For player 1
+        attackSeaTileButtonLists.add(new ArrayList<Button>());      // For player 2
 
         for (int playerNum = 0; playerNum < 2; playerNum++) {
             gameplayAttackLabels[playerNum] = new Label(gameController.getPlayers().get(0) + "'s attempts:");
@@ -297,7 +300,7 @@ public class GameApplication extends Application {
         gameplayGrids[playerNum] = new GridPane();
         gameplayGrids[playerNum].setAlignment(Pos.CENTER);
         for (int i = 0; i < 100; i++) {
-            buildAttackSeaTileButton(playerNum, otherPlayer, i, seaButtons);
+            buildAttackSeaTileButton(attackingPlayer, i);
         }
     }
 
