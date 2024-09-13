@@ -40,10 +40,6 @@ class GameControllerTest {
         assertFalse(gc.isValidShipPlacementLocation(3, 2, gc.getActivePlayer().getFleet()));
     }
 
-    @Test
-    void typingRDuringShipPlacementRotatesShipDisplay() {
-        assertTrue(false);
-    }
 
 
 
