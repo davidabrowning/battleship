@@ -1,5 +1,6 @@
 module group.battleship {
     requires javafx.controls;
+    requires transitive javafx.graphics;
 
 
     opens group.battleship to javafx.fxml;
