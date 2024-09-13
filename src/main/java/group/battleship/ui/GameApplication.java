@@ -80,6 +80,11 @@ public class GameApplication extends Application {
         newPlayerLabel.setFont(Style.FONT_DEFAULT);
         newPlayerTextField = new TextField();
         newPlayerTextField.setFont(Style.FONT_DEFAULT);
+        newPlayerTextField.setOnKeyReleased(event -> {
+            if (event.getCode().toString().equals("ENTER")) {
+                handleCreateNewPlayerSubmitClick();
+            }            
+        });
         newPlayerSubmitButton = new Button("Submit");
         newPlayerSubmitButton.setFont(Style.FONT_DEFAULT);
         newPlayerSubmitButton.setOnAction(event -> handleCreateNewPlayerSubmitClick());
