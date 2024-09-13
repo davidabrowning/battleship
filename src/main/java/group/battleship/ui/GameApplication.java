@@ -91,7 +91,14 @@ public class GameApplication extends Application {
     }
 
     public void handleCreateNewPlayerSubmitClick() {
-        gameController.createPlayer(newPlayerTextField.getText());
+        String newPlayerName = newPlayerTextField.getText();
+
+        // Exit criteria
+        if (newPlayerName.length() < 4) {
+            return;
+        }
+
+        gameController.createPlayer(newPlayerName);
 
         if (gameController.getNumPlayers() < 2) {
             newPlayerLabel.setText("Player 2:");
