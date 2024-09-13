@@ -39,6 +39,7 @@ public class GameApplication extends Application {
     private Player playerToPlace;
     private Fleet fleetToPlace;
     private Ship shipToPlace;
+    private int shipToPlaceLastTileHovered;
 
     private Scene gameplayScene;
     private HBox gameplayLayout;
@@ -185,6 +186,7 @@ public class GameApplication extends Application {
         resetOpenSeaTilesDuringShipPlacement(fleetToPlace, shipPlacementSeaTiles);
         if (gameController.isValidShipPlacementLocation(tileNum, shipToPlace.getSize(), fleetToPlace)) {
             showPotentialShipPlacementShadow(playerToPlace, shipToPlace, tileNum, shipPlacementSeaTiles);
+            shipToPlaceLastTileHovered = tileNum;
         }
     }
 
@@ -250,6 +252,7 @@ public class GameApplication extends Application {
         if (k.getCode().toString().equals("R")) {
             gameController.rotateShipPlacement(playerToPlace);
         }
+        handleShipPlacementSeaTileButtonHoverEvent(shipToPlaceLastTileHovered);
     }
 
     // This method creates the Scene where both Players attempt to hit each other's Ships
