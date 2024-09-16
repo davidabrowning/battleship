@@ -13,6 +13,7 @@ public class Style {
 
     public static final int SPACING_DEFAULT = 5;
     public static final int SPACING_LARGE = 50;
+    public static final int SEATILE_BUTTON_SIZE = 50;
     public static final Insets INSETS_DEFAULT = new Insets(5, 5, 5, 5);
     public static final Insets INSETS_LARGE = new Insets(50, 50, 50, 50);
     public static final Font FONT_DEFAULT = new Font("Arial", 24);

@@ -8,6 +8,8 @@ public class Game {
     private final List<Player> players;
     private Player activePlayer;
     private boolean gameOver;
+    private final int numPlayersNeeded = 2;
+    private final int boardSize = 10;
 
     public Game() {
         players = new ArrayList<>();

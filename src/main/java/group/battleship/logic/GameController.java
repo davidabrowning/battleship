@@ -22,6 +22,7 @@ public class GameController {
     public boolean placeShipHorizontally(Player p) { return p.placeShipHorizontally(); }
     public void rotateShipPlacement(Player p) { p.rotateShipPlacement(); }
     public void swapActivePlayer() { game.swapActivePlayer(); }
+    public int getBoardSize() { return game.getBoardSize(); }
 
     // This method creates a new Player and adds it to the Game
     public void createPlayer(String playerName) {
@@ -41,12 +42,12 @@ public class GameController {
 
     // This method checks if a Ship can be placed here legally
     public boolean isValidShipPlacementLocation(int tileNum, int shipLength, Fleet alreadyPlacedFleet) {
-        int row = tileNum / 10;
-        int col = tileNum % 10;
+        int row = tileNum / game.getBoardSize();
+        int col = tileNum % game.getBoardSize();
         boolean horizontalOrientation = game.getActivePlayer().placeShipHorizontally();
 
         // Check if this placement is on the grid
-        if (horizontalOrientation && col + shipLength > 10 || !horizontalOrientation && row + shipLength > 10) {
+        if (horizontalOrientation && col + shipLength > game.getBoardSize() || !horizontalOrientation && row + shipLength > game.getBoardSize()) {
             return false;
         }
 
@@ -58,7 +59,7 @@ public class GameController {
             }
         } else {
             for (int i = 0; i < shipLength; i++) {
-                desiredTiles[i] = tileNum + i * 10;
+                desiredTiles[i] = tileNum + i * game.getBoardSize();
             }
         }
         for (int desiredTile : desiredTiles) {
@@ -78,7 +79,7 @@ public class GameController {
             }
         } else {
             for (int i = 0; i < ship.getSize(); i++) {
-                ship.addLocation(tileNum + i * 10);
+                ship.addLocation(tileNum + i * game.getBoardSize());
             }
         }
     }
@@ -88,7 +89,7 @@ public class GameController {
     }
 
     public boolean allShipsArePlaced() {
-        if (getNumPlayers() < 2) {
+        if (getNumPlayers() < game.getNumPlayersNeeded()) {
             return false;
         }
         for (Player p : game.getPlayers()) {

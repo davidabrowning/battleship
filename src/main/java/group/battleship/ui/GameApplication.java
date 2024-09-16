@@ -160,7 +160,7 @@ public class GameApplication extends Application {
         // Create input grid
         shipPlacementGridPane = new GridPane();
         shipPlacementGridPane.setAlignment(Pos.CENTER);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < Math.pow(gameController.getBoardSize(), 2); i++) {
             buildShipPlacementSeaTileButton(i);
         }
     }
@@ -320,14 +320,14 @@ public class GameApplication extends Application {
         // Create and configure this button
         Button seaButton = new Button();
         seaButton.setFont(Style.FONT_SMALL);
-        seaButton.setMinWidth(50);
-        seaButton.setMinHeight(50);
+        seaButton.setMinWidth(Style.SEATILE_BUTTON_SIZE);
+        seaButton.setMinHeight(Style.SEATILE_BUTTON_SIZE);
         seaButton.setBackground(Background.fill(Color.LIGHTBLUE));
         seaButton.setBorder(new Border(Style.BORDER_BLACK));
 
         // Add this Button to the grid and the List of Buttons
-        GridPane.setRowIndex(seaButton, tileNum / 10);
-        GridPane.setColumnIndex(seaButton, tileNum % 10);
+        GridPane.setRowIndex(seaButton, tileNum / gameController.getBoardSize());
+        GridPane.setColumnIndex(seaButton, tileNum % gameController.getBoardSize());
         gameplayGrids[attackingPlayerNum].getChildren().add(seaButton);
         attackSeaTileButtonLists.get(attackingPlayerNum).add(seaButton);
 
@@ -384,7 +384,7 @@ public class GameApplication extends Application {
             Player attackedPlayer = gameController.getOtherPlayer(attackingPlayer);
             Fleet attackedFleet = attackedPlayer.getFleet();
 
-            for (int k = 0; k < 100; k++) {
+            for (int k = 0; k < Math.pow(gameController.getBoardSize(), 2); k++) {
                 Button thisSeaTileButton = attackSeaTileButtonLists.get(attackingPlayerNum).get(k);
                 if (attackedFleet.containsSunkShip(k)) {
                     thisSeaTileButton.setBackground(Background.fill((Color.DARKRED)));
