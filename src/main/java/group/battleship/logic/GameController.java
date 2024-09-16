@@ -8,6 +8,7 @@ public class GameController {
 
     private final Game game;
 
+
     public GameController() {
         game = new Game();
     }
