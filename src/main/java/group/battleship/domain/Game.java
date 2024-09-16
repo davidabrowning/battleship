@@ -18,6 +18,14 @@ public class Game {
     }
 
     public Player getPlayer(int playerNum) { return players.get(playerNum); }
+    public List<Player> getPlayers() { return players; }
+    public int numPlayers() { return players.size(); }
+    public Player getActivePlayer() { return activePlayer; }
+    public void setActivePlayer(Player p) { activePlayer = p; }
+    public void setGameOver(boolean isGameOver) { gameOver = isGameOver; }
+    public boolean isGameOver() { return gameOver; }
+    public int getNumPlayersNeeded() { return numPlayersNeeded; }
+    public int getBoardSize() { return boardSize; } 
 
     public void addPlayer(Player p) {
         players.add(p);
@@ -25,22 +33,6 @@ public class Game {
             activePlayer = p;
         }
     }
-
-    public List<Player> getPlayers() { return players; }
-
-    public int numPlayers() {
-        return players.size();
-    }
-
-    public Player getActivePlayer() {
-        return activePlayer;
-    }
-
-    public void setActivePlayer(Player p) { activePlayer = p; }
-
-    public void setGameOver(boolean isGameOver) { gameOver = isGameOver; }
-
-    public boolean isGameOver() { return gameOver; }
 
     public void swapActivePlayer() {
         if (activePlayer == players.get(0)) {
