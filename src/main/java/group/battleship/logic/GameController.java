@@ -12,17 +12,11 @@ public class GameController {
         game = new Game();
     }
 
-    public int getNumPlayers() {
-        return game.numPlayers();
-    }
-    public Player getActivePlayer() {
-        return game.getActivePlayer();
-    }
+    public int getNumPlayers() { return game.numPlayers(); }
+    public Player getActivePlayer() { return game.getActivePlayer(); }
     public void setActivePlayer(Player p) { game.setActivePlayer(p); }
     public Player getPlayer(int playerNum) { return game.getPlayer(playerNum); }
-    public List<Player> getPlayers() {
-        return game.getPlayers();
-    }
+    public List<Player> getPlayers() { return game.getPlayers(); }
     public Player getOtherPlayer(Player player) { return game.getOtherPlayer(player);}
     public boolean isGameOver() { return game.isGameOver(); }
     public boolean placeShipHorizontally(Player p) { return p.placeShipHorizontally(); }
